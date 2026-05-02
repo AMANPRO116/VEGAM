@@ -130,46 +130,15 @@ body {
 #heroBgVideo {
   width: 100%; height: 100%;
   object-fit: cover;
-  transform-origin: center center;
-  /* smooth transition props applied via JS */
-  transition:
-    filter 1.8s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 1.8s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-/* Cinematic blur state – added by JS at frame 100 */
-#heroBgVideo.cinematic {
-  filter: blur(18px) brightness(0.45);
-  transform: scale(1.08);
 }
 /* vignette over the video */
 #videoVignette {
   position: absolute; inset: 0; z-index: 1;
   background:
-    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.7) 100%),
-    linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.9) 100%);
-  pointer-events: none;
-  transition: background 1.8s;
-}
-/* deepen vignette when cinematic */
-#videoVignette.cinematic {
-  background:
-    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 10%, rgba(0,0,0,0.85) 100%),
-    linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.95) 100%);
-}
-
-/* letterbox bars for cinematic feel */
-#lbTop, #lbBottom {
-  position: absolute; left: 0; right: 0;
-  height: 0px;
-  background: #000;
-  z-index: 2;
-  transition: height 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.6) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.88) 100%);
   pointer-events: none;
 }
-#lbTop { top: 0; }
-#lbBottom { bottom: 0; }
-#lbTop.open, #lbBottom.open { height: 60px; }
 
 /* ========== VIDEO LAYER (old gate intro – no longer used as hero) ========== */
 #videoLayer { display: none; }
@@ -765,12 +734,10 @@ body::after {
 <section id="home">
   <!-- Video background lives here -->
   <div id="videoBg">
-    <video id="heroBgVideo" playsinline muted loop preload="auto">
+    <video id="heroBgVideo" playsinline muted preload="auto">
       <source src="intro.mp4" type="video/mp4">
     </video>
     <div id="videoVignette"></div>
-    <div id="lbTop"></div>
-    <div id="lbBottom"></div>
   </div>
   <div class="hero-bg"></div>
   <div class="hero-number">7</div>
@@ -1171,49 +1138,16 @@ document.querySelectorAll('a, button, .member-card').forEach(el => {
   el.addEventListener('mouseleave', () => cursorRing.style.transform = 'translate(-50%,-50%) scale(1)');
 });
 
-/* ---- VIDEO BG CINEMATIC ---- */
-const TOTAL_FRAMES = 100;
-const FPS = 24;
-const CINEMATIC_TIME = TOTAL_FRAMES / FPS; // 4.1666...s
-
+/* ---- VIDEO BG: play once, pause on last frame ---- */
 const heroBgVideo = document.getElementById('heroBgVideo');
-const videoVignette = document.getElementById('videoVignette');
-const lbTop  = document.getElementById('lbTop');
-const lbBottom = document.getElementById('lbBottom');
 
-let cinematicFired = false;
+// remove loop so it naturally ends
+heroBgVideo.loop = false;
 
-function triggerCinematic() {
-  if (cinematicFired) return;
-  cinematicFired = true;
-
-  // 1. Letterbox bars slide in
-  lbTop.classList.add('open');
-  lbBottom.classList.add('open');
-
-  // 2. Video blurs + slow zoom
-  heroBgVideo.classList.add('cinematic');
-
-  // 3. Vignette deepens
-  videoVignette.classList.add('cinematic');
-
-  // 4. After transition settles (~1.8s), loop the video from the start
-  //    but keep it blurred — so it plays as a moody ambient bg forever
-  setTimeout(() => {
-    heroBgVideo.currentTime = 0;
-    heroBgVideo.loop = true;
-    // keep cinematic classes — blur persists as ambient background
-  }, 1900);
-}
-
-// Use timeupdate for precision
-heroBgVideo.addEventListener('timeupdate', () => {
-  if (!cinematicFired && heroBgVideo.currentTime >= CINEMATIC_TIME) {
-    triggerCinematic();
-  }
+heroBgVideo.addEventListener('ended', () => {
+  // stay on the last frame — already paused by browser on ended
+  heroBgVideo.pause();
 });
-// Fallback: also fire on 'ended' in case loop=false slips through
-heroBgVideo.addEventListener('ended', triggerCinematic);
 
 /* ---- GATE → REVEAL SITE ---- */
 const gate    = document.getElementById('gate');
