@@ -429,65 +429,122 @@ section:not(#home) { background: var(--bg); border-top: 1px solid var(--border);
 .spec-val.highlight { color: var(--accent); }
 
 /* ========== TEAM ========== */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2px;
-  max-width: 1100px;
+.dept-tabs {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 48px;
 }
-.member-card {
-  background: var(--surface);
-  padding: 40px 32px;
-  border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-  transition: border-color 0.3s;
-}
-.member-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s cubic-bezier(0.77,0,0.18,1);
-}
-.member-card:hover::before { transform: scaleX(1); }
-.member-card:hover { border-color: rgba(0,230,118,0.3); }
-
-.member-number {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 80px;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--border);
-  position: absolute;
-  right: 20px; top: 20px;
-  pointer-events: none;
-  transition: -webkit-text-stroke-color 0.3s;
-}
-.member-card:hover .member-number { -webkit-text-stroke-color: rgba(0,230,118,0.15); }
-
-.member-role {
+.dept-tab {
   font-family: 'Share Tech Mono', monospace;
   font-size: 11px;
   letter-spacing: 3px;
-  color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 12px;
-}
-.member-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 40px;
-  letter-spacing: 3px;
-  margin-bottom: 16px;
-}
-.member-desc {
-  font-size: 14px;
-  line-height: 1.7;
+  padding: 8px 20px;
+  border: 1px solid var(--border);
+  background: transparent;
   color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dept-tab:hover { border-color: var(--accent); color: var(--accent); }
+.dept-tab.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+
+.roster-table {
+  width: 100%; max-width: 1100px;
+  border-collapse: collapse;
+}
+.roster-table thead tr {
+  border-bottom: 1px solid var(--accent);
+}
+.roster-table th {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 400;
+}
+.roster-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.roster-table tbody tr:hover { background: rgba(0,230,118,0.04); }
+.roster-table td {
+  padding: 16px 16px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+.td-num {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  width: 40px;
+}
+.td-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--text);
+}
+.td-branch {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+.dept-badge {
+  display: inline-block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.dept-powertrain  { background: rgba(0,230,118,0.12); color: #00e676; border: 1px solid rgba(0,230,118,0.25); }
+.dept-steering    { background: rgba(105,255,71,0.10); color: #69ff47; border: 1px solid rgba(105,255,71,0.22); }
+.dept-braking     { background: rgba(0,188,212,0.10); color: #00bcd4; border: 1px solid rgba(0,188,212,0.22); }
+.dept-design      { background: rgba(255,215,0,0.10); color: #ffd700; border: 1px solid rgba(255,215,0,0.22); }
+.dept-business    { background: rgba(180,0,255,0.10); color: #ce93d8; border: 1px solid rgba(180,0,255,0.22); }
+.td-email a {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.5px;
+}
+.td-email a:hover { color: var(--accent); }
+
+.team-stats {
+  display: flex; flex-wrap: wrap; gap: 32px;
+  margin-bottom: 48px;
+}
+.t-stat { display: flex; flex-direction: column; gap: 4px; }
+.t-stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--accent);
+}
+.t-stat-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .roster-table thead { display: none; }
+  .roster-table, .roster-table tbody, .roster-table tr, .roster-table td { display: block; width: 100%; }
+  .roster-table tr { padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .roster-table td { padding: 4px 0; border: none; }
+  .td-num { display: inline; margin-right: 8px; }
+  .td-name { display: inline; }
+}
 }
 
 /* ========== TIMELINE ========== */
@@ -794,29 +851,217 @@ body::after {
     <div class="section-num">02</div>
     <div>
       <div class="section-title">THE CREW</div>
-      <div class="section-sub">The Minds Behind The Machine</div>
+      <div class="section-sub">25 Engineers · 5 Departments</div>
     </div>
   </div>
-  <div class="team-grid">
-    <div class="member-card reveal">
-      <div class="member-number">01</div>
-      <div class="member-role">Team Lead · Chassis</div>
-      <div class="member-name">AMAN</div>
-      <div class="member-desc">Leads the structural design and fabrication of the chassis. Ensures rigidity meets performance targets while keeping weight at a minimum.</div>
-    </div>
-    <div class="member-card reveal" style="transition-delay:0.1s">
-      <div class="member-number">02</div>
-      <div class="member-role">Powertrain · Dynamics</div>
-      <div class="member-name">ROCHAN</div>
-      <div class="member-desc">Manages the powertrain setup and vehicle dynamics. Tunes the kart for optimal balance between straight-line speed and cornering grip.</div>
-    </div>
-    <div class="member-card reveal" style="transition-delay:0.2s">
-      <div class="member-number">03</div>
-      <div class="member-role">Electronics · Safety</div>
-      <div class="member-name">VARSHITH</div>
-      <div class="member-desc">Oversees the electrical systems and all safety-critical components. Ensures the kart meets FKDC compliance standards at every checkpoint.</div>
-    </div>
+
+  <!-- Stats row -->
+  <div class="team-stats reveal">
+    <div class="t-stat"><div class="t-stat-num">25</div><div class="t-stat-label">Members</div></div>
+    <div class="t-stat"><div class="t-stat-num">5</div><div class="t-stat-label">Departments</div></div>
+    <div class="t-stat"><div class="t-stat-num">5</div><div class="t-stat-label">Branches</div></div>
+    <div class="t-stat"><div class="t-stat-num">1</div><div class="t-stat-label">Goal</div></div>
   </div>
+
+  <!-- Filter tabs -->
+  <div class="dept-tabs reveal">
+    <button class="dept-tab active" data-dept="all">ALL</button>
+    <button class="dept-tab" data-dept="powertrain">⚡ Powertrain</button>
+    <button class="dept-tab" data-dept="steering">🔧 Steering</button>
+    <button class="dept-tab" data-dept="braking">🛑 Braking</button>
+    <button class="dept-tab" data-dept="design">🔩 Design & Fab</button>
+    <button class="dept-tab" data-dept="business">📊 Business Ops</button>
+  </div>
+
+  <!-- Roster Table -->
+  <table class="roster-table reveal">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Branch</th>
+        <th>Department</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody id="rosterBody">
+      <tr data-dept="powertrain">
+        <td class="td-num">01</td>
+        <td class="td-name">Varthin Sakthivel</td>
+        <td class="td-branch">EEE</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:varthinsakthivel@gmail.com">varthinsakthivel@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">02</td>
+        <td class="td-name">Jonna Nikhil</td>
+        <td class="td-branch">ELC</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:jonnanikhil@gmail.com">jonnanikhil@gmail.com</a></td>
+      </tr>
+      <tr data-dept="steering">
+        <td class="td-num">03</td>
+        <td class="td-name">Kunda Chudanath</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-steering">Steering</span></td>
+        <td class="td-email"><a href="mailto:chudanathkunda1633@gmail.com">chudanathkunda1633@gmail.com</a></td>
+      </tr>
+      <tr data-dept="braking">
+        <td class="td-num">04</td>
+        <td class="td-name">Mudiam Sahasra</td>
+        <td class="td-branch">MEE</td>
+        <td><span class="dept-badge dept-braking">Braking</span></td>
+        <td class="td-email"><a href="mailto:mudiamsahasra31@gmail.com">mudiamsahasra31@gmail.com</a></td>
+      </tr>
+      <tr data-dept="steering">
+        <td class="td-num">05</td>
+        <td class="td-name">Chilukuri Rohan Sashank Reddy</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-steering">Steering</span></td>
+        <td class="td-email"><a href="mailto:rohansasahankreddych@gmail.com">rohansasahankreddych@gmail.com</a></td>
+      </tr>
+      <tr data-dept="steering">
+        <td class="td-num">06</td>
+        <td class="td-name">Madhumitha Winsraj</td>
+        <td class="td-branch">ECE</td>
+        <td><span class="dept-badge dept-steering">Steering</span></td>
+        <td class="td-email"><a href="mailto:mathu1413@gmail.com">mathu1413@gmail.com</a></td>
+      </tr>
+      <tr data-dept="braking">
+        <td class="td-num">07</td>
+        <td class="td-name">Sanjana Karthic</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-braking">Braking</span></td>
+        <td class="td-email"><a href="mailto:sanjanar.49006@gmail.com">sanjanar.49006@gmail.com</a></td>
+      </tr>
+      <tr data-dept="design">
+        <td class="td-num">08</td>
+        <td class="td-name">S. Muthusiva</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-design">Design & Fab</span></td>
+        <td class="td-email"><a href="mailto:tvspmuthusiva@gmail.com">tvspmuthusiva@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">09</td>
+        <td class="td-name">Kerubakar B</td>
+        <td class="td-branch">ELC</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:kerubakar2007@gmail.com">kerubakar2007@gmail.com</a></td>
+      </tr>
+      <tr data-dept="steering">
+        <td class="td-num">10</td>
+        <td class="td-name">Gireeshma</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-steering">Steering</span></td>
+        <td class="td-email"><a href="mailto:gireeshma2008@gmail.com">gireeshma2008@gmail.com</a></td>
+      </tr>
+      <tr data-dept="design">
+        <td class="td-num">11</td>
+        <td class="td-name">B. Neha Adhithi</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-design">Design & Fab</span></td>
+        <td class="td-email"><a href="mailto:nehaadhithib@gmail.com">nehaadhithib@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">12</td>
+        <td class="td-name">Jayshandhya J.G</td>
+        <td class="td-branch">ELC</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:jgjay006@gmail.com">jgjay006@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">13</td>
+        <td class="td-name">S.J. Yatish</td>
+        <td class="td-branch">ECE</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:sjyatish27@gmail.com">sjyatish27@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">14</td>
+        <td class="td-name">Anvi Talacheeru</td>
+        <td class="td-branch">ELC</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:talacheeruanvi@gmail.com">talacheeruanvi@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">15</td>
+        <td class="td-name">Varikuti Karthik Reddy</td>
+        <td class="td-branch">EEE</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:varikutikarthik333@gmail.com">varikutikarthik333@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">16</td>
+        <td class="td-name">Balavenkatagari Muni Pranavi</td>
+        <td class="td-branch">ECE</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:munipranavi.31@gmail.com">munipranavi.31@gmail.com</a></td>
+      </tr>
+      <tr data-dept="design">
+        <td class="td-num">17</td>
+        <td class="td-name">Madasu Aman Siddharth</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-design">Design & Fab</span></td>
+        <td class="td-email"><a href="mailto:amansiddharth21@gmail.com">amansiddharth21@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">18</td>
+        <td class="td-name">M Sri Sai Prajwal</td>
+        <td class="td-branch">EEE</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:madduriprajwal@gmail.com">madduriprajwal@gmail.com</a></td>
+      </tr>
+      <tr data-dept="design">
+        <td class="td-num">19</td>
+        <td class="td-name">Hem Ajhay K</td>
+        <td class="td-branch">MEE</td>
+        <td><span class="dept-badge dept-design">Design & Fab</span></td>
+        <td class="td-email"><a href="mailto:hemajhaykrish2004@gmail.com">hemajhaykrish2004@gmail.com</a></td>
+      </tr>
+      <tr data-dept="business">
+        <td class="td-num">20</td>
+        <td class="td-name">Darshan Krishna Tummala</td>
+        <td class="td-branch">EEE</td>
+        <td><span class="dept-badge dept-business">Business Ops</span></td>
+        <td class="td-email"><a href="mailto:darshankrishna576@gmail.com">darshankrishna576@gmail.com</a></td>
+      </tr>
+      <tr data-dept="braking">
+        <td class="td-num">21</td>
+        <td class="td-name">D. Sai Jaya Surya</td>
+        <td class="td-branch">RAE</td>
+        <td><span class="dept-badge dept-braking">Braking</span></td>
+        <td class="td-email"><a href="mailto:saijayasurya.d@gmail.com">saijayasurya.d@gmail.com</a></td>
+      </tr>
+      <tr data-dept="powertrain">
+        <td class="td-num">22</td>
+        <td class="td-name">Burla Krishna Sashank</td>
+        <td class="td-branch">EEE</td>
+        <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
+        <td class="td-email"><a href="mailto:sashank8642@gmail.com">sashank8642@gmail.com</a></td>
+      </tr>
+      <tr data-dept="design">
+        <td class="td-num">23</td>
+        <td class="td-name">M. Madheswaran</td>
+        <td class="td-branch">MEE</td>
+        <td><span class="dept-badge dept-design">Design & Fab</span></td>
+        <td class="td-email"><a href="mailto:madhesm360@gmail.com">madhesm360@gmail.com</a></td>
+      </tr>
+      <tr data-dept="braking">
+        <td class="td-num">24</td>
+        <td class="td-name">Haarish Kumar Sundarapandiyan</td>
+        <td class="td-branch">EEE</td>
+        <td><span class="dept-badge dept-braking">Braking</span></td>
+        <td class="td-email"><a href="mailto:haarishkumarsundarapandian18@gmail.com">haarishkumarsundarapandian18@gmail.com</a></td>
+      </tr>
+      <tr data-dept="business">
+        <td class="td-num">25</td>
+        <td class="td-name">V B Gireendra</td>
+        <td class="td-branch">ELC</td>
+        <td><span class="dept-badge dept-business">Business Ops</span></td>
+        <td class="td-email"><a href="mailto:gireendra2007@gmail.com">gireendra2007@gmail.com</a></td>
+      </tr>
+    </tbody>
+  </table>
 </section>
 
 <!-- TIMELINE -->
@@ -1008,7 +1253,19 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-/* ---- SMOOTH SCROLL ---- */
+/* ---- DEPT FILTER TABS ---- */
+document.querySelectorAll('.dept-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.dept-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const dept = tab.dataset.dept;
+    document.querySelectorAll('#rosterBody tr').forEach(row => {
+      row.style.display = (dept === 'all' || row.dataset.dept === dept) ? '' : 'none';
+    });
+  });
+});
+
+
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
