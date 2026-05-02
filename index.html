@@ -25,26 +25,19 @@ body {
   overflow-x: hidden;
 }
 
-/* ========== CURSOR ========== */
-.cursor {
-  width: 10px; height: 10px;
-  background: var(--accent);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s;
-  mix-blend-mode: difference;
+/* ========== CHECKERED FLAG STRIP ========== */
+#flagStrip {
+  position: fixed;
+  right: 0; top: 0; bottom: 0;
+  width: 32px;
+  z-index: 490;
+  pointer-events: none;
+  overflow: hidden;
 }
-.cursor-ring {
-  width: 36px; height: 36px;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: all 0.25s cubic-bezier(0.23, 1, 0.32, 1);
-  opacity: 0.5;
+#flagCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
 }
 
 /* ========== LOADER / ENTRY ========== */
@@ -682,9 +675,10 @@ body::after {
 </head>
 <body>
 
-<!-- CURSOR -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<!-- CHECKERED FLAG STRIP -->
+<div id="flagStrip">
+  <canvas id="flagCanvas"></canvas>
+</div>
 
 <!-- GATE / ENTRY -->
 <div id="gate">
@@ -1124,19 +1118,58 @@ body::after {
 </footer>
 
 <script>
-/* ---- CURSOR ---- */
-const cursor = document.getElementById('cursor');
-const cursorRing = document.getElementById('cursorRing');
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top = e.clientY + 'px';
-  cursorRing.style.left = e.clientX + 'px';
-  cursorRing.style.top = e.clientY + 'px';
-});
-document.querySelectorAll('a, button, .member-card').forEach(el => {
-  el.addEventListener('mouseenter', () => cursorRing.style.transform = 'translate(-50%,-50%) scale(1.8)');
-  el.addEventListener('mouseleave', () => cursorRing.style.transform = 'translate(-50%,-50%) scale(1)');
-});
+/* ---- CHECKERED FLAG STRIP ---- */
+(function() {
+  const canvas = document.getElementById('flagCanvas');
+  const SIZE = 16;
+  let offset = 0;
+  let last = null;
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  function draw(ts) {
+    if (last === null) last = ts;
+    const delta = ts - last;
+    last = ts;
+
+    // advance by pixels-per-ms — keeps speed frame-rate independent
+    offset = (offset + delta * 0.04) % SIZE;
+
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    const cols = Math.ceil(W / SIZE) + 1;
+    const rows = Math.ceil(H / SIZE) + 2;
+
+    for (let r = -1; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = c * SIZE;
+        const y = r * SIZE + offset;
+        ctx.fillStyle = (r + c) % 2 === 0
+          ? 'rgba(0,230,118,0.88)'
+          : 'rgba(0,0,0,0.88)';
+        ctx.fillRect(x, y, SIZE, SIZE);
+      }
+    }
+
+    // left-edge fade so it blends into the page
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, 'rgba(5,5,5,0.78)');
+    grad.addColorStop(0.55, 'rgba(5,5,5,0.0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(draw);
+})();
 
 /* ---- VIDEO BG: play once, pause on last frame ---- */
 const heroBgVideo = document.getElementById('heroBgVideo');
