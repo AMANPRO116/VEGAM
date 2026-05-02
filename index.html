@@ -25,20 +25,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ========== CHECKERED FLAG STRIP ========== */
-#flagStrip {
-  position: fixed;
-  right: 0; top: 0; bottom: 0;
-  width: 32px;
-  z-index: 490;
-  pointer-events: none;
-  overflow: hidden;
-}
-#flagCanvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-}
+
 
 /* ========== LOADER / ENTRY ========== */
 #gate {
@@ -325,12 +312,26 @@ body {
 }
 .btn-ghost:hover { border-color: white; }
 
+/* ========== BLUEPRINT BACKGROUND ========== */
+#blueprint {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.13;
+  overflow: hidden;
+}
+#blueprint svg {
+  width: 100%;
+  height: 100%;
+}
+
 /* ========== SECTION BASE ========== */
 section {
   padding: 120px 40px;
   position: relative;
 }
-section:not(#home) { background: var(--bg); border-top: 1px solid var(--border); }
+section:not(#home) { background: rgba(5,5,5,0.92); border-top: 1px solid var(--border); }
 
 .section-header {
   display: flex; align-items: flex-start; gap: 24px;
@@ -675,12 +676,330 @@ body::after {
 </head>
 <body>
 
-<!-- CHECKERED FLAG STRIP -->
-<div id="flagStrip">
-  <canvas id="flagCanvas"></canvas>
+
+
+<!-- BLUEPRINT BACKGROUND -->
+<div id="blueprint">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <style>
+      .bp { stroke:#00e676; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+      .bp-thin  { stroke-width:0.5; }
+      .bp-mid   { stroke-width:1; }
+      .bp-thick { stroke-width:1.8; }
+      .bp-dash  { stroke-width:0.7; stroke-dasharray:6,4; }
+      .bp-dot   { stroke-width:0.5; stroke-dasharray:1,5; }
+      .bp-txt   { fill:#00e676; font-family:'Share Tech Mono',monospace; font-size:9px; }
+      .bp-txt-sm{ fill:#00e676; font-family:'Share Tech Mono',monospace; font-size:7px; }
+      .bp-dim   { stroke:#00e676; stroke-width:0.5; fill:none; }
+    </style>
+    <!-- grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40,0 L0,0 L0,40" class="bp bp-thin" stroke-opacity="0.3"/>
+    </pattern>
+    <pattern id="smallgrid" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M8,0 L0,0 L0,8" class="bp bp-thin" stroke-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <!-- grid -->
+  <rect width="1440" height="900" fill="url(#smallgrid)"/>
+  <rect width="1440" height="900" fill="url(#grid)"/>
+
+  <!-- ===================== TOP VIEW (left side) ===================== -->
+  <!-- label -->
+  <text x="120" y="52" class="bp-txt">TOP VIEW</text>
+  <line x1="120" y1="56" x2="620" y2="56" class="bp bp-thin"/>
+
+  <!-- chassis main frame - top view -->
+  <!-- outer frame rectangle -->
+  <rect x="140" y="80" width="480" height="200" rx="8" class="bp bp-thick"/>
+
+  <!-- chassis tube lines -->
+  <line x1="140" y1="160" x2="620" y2="160" class="bp bp-mid"/>
+  <line x1="140" y1="200" x2="620" y2="200" class="bp bp-thin"/>
+
+  <!-- front axle area -->
+  <rect x="140" y="68" width="480" height="24" rx="4" class="bp bp-mid"/>
+  <!-- front axle bar -->
+  <line x1="200" y1="80" x2="560" y2="80" class="bp bp-thick"/>
+
+  <!-- rear axle area -->
+  <rect x="140" y="268" width="480" height="24" rx="4" class="bp bp-mid"/>
+  <line x1="200" y1="280" x2="560" y2="280" class="bp bp-thick"/>
+
+  <!-- Front wheels (top view - rectangles) -->
+  <rect x="130" y="62" width="30" height="44" rx="5" class="bp bp-thick"/>
+  <rect x="600" y="62" width="30" height="44" rx="5" class="bp bp-thick"/>
+  <!-- wheel detail lines -->
+  <line x1="130" y1="84" x2="160" y2="84" class="bp bp-thin"/>
+  <line x1="600" y1="84" x2="630" y2="84" class="bp bp-thin"/>
+
+  <!-- Rear wheels (top view) -->
+  <rect x="120" y="262" width="38" height="56" rx="5" class="bp bp-thick"/>
+  <rect x="602" y="262" width="38" height="56" rx="5" class="bp bp-thick"/>
+  <line x1="120" y1="290" x2="158" y2="290" class="bp bp-thin"/>
+  <line x1="602" y1="290" x2="640" y2="290" class="bp bp-thin"/>
+
+  <!-- driver seat outline -->
+  <ellipse cx="380" cy="185" rx="80" ry="55" class="bp bp-mid"/>
+  <ellipse cx="380" cy="185" rx="55" ry="38" class="bp bp-thin"/>
+  <!-- head position -->
+  <circle cx="380" cy="140" r="22" class="bp bp-mid"/>
+  <circle cx="380" cy="140" r="14" class="bp bp-thin"/>
+
+  <!-- steering column -->
+  <line x1="380" y1="118" x2="380" y2="100" class="bp bp-mid"/>
+  <!-- steering wheel -->
+  <ellipse cx="380" cy="95" rx="28" ry="10" class="bp bp-mid"/>
+  <line x1="352" y1="95" x2="408" y2="95" class="bp bp-thin"/>
+  <line x1="380" y1="85" x2="380" y2="105" class="bp bp-thin"/>
+
+  <!-- engine block (rear) -->
+  <rect x="330" y="215" width="100" height="48" rx="3" class="bp bp-thick"/>
+  <rect x="338" y="222" width="84" height="34" rx="2" class="bp bp-thin"/>
+  <!-- engine detail -->
+  <line x1="355" y1="222" x2="355" y2="256" class="bp bp-thin"/>
+  <line x1="380" y1="222" x2="380" y2="256" class="bp bp-thin"/>
+  <line x1="405" y1="222" x2="405" y2="256" class="bp bp-thin"/>
+
+  <!-- chassis cross braces -->
+  <line x1="200" y1="80" x2="260" y2="160" class="bp bp-thin"/>
+  <line x1="500" y1="80" x2="440" y2="160" class="bp bp-thin"/>
+  <line x1="200" y1="280" x2="260" y2="200" class="bp bp-thin"/>
+  <line x1="500" y1="280" x2="440" y2="200" class="bp bp-thin"/>
+
+  <!-- center dash -->
+  <line x1="380" y1="80" x2="380" y2="92" class="bp bp-dash"/>
+  <line x1="380" y1="268" x2="380" y2="280" class="bp bp-dash"/>
+  <line x1="140" y1="180" x2="152" y2="180" class="bp bp-dash"/>
+  <line x1="608" y1="180" x2="620" y2="180" class="bp bp-dash"/>
+
+  <!-- dimension lines top view -->
+  <line x1="140" y1="320" x2="620" y2="320" class="bp-dim"/>
+  <line x1="140" y1="315" x2="140" y2="325" class="bp-dim"/>
+  <line x1="620" y1="315" x2="620" y2="325" class="bp-dim"/>
+  <text x="355" y="316" class="bp-txt" text-anchor="middle">1050mm</text>
+
+  <line x1="670" y1="68" x2="670" y2="292" class="bp-dim"/>
+  <line x1="665" y1="68" x2="675" y2="68" class="bp-dim"/>
+  <line x1="665" y1="292" x2="675" y2="292" class="bp-dim"/>
+  <text x="674" y="185" class="bp-txt" text-anchor="start">750mm</text>
+
+  <!-- annotations -->
+  <line x1="408" y1="92" x2="440" y2="70" class="bp bp-thin"/>
+  <text x="442" y="69" class="bp-txt-sm">STEERING WHEEL</text>
+
+  <line x1="460" y1="140" x2="490" y2="125" class="bp bp-thin"/>
+  <text x="492" y="124" class="bp-txt-sm">DRIVER SEAT</text>
+
+  <line x1="430" y1="239" x2="460" y2="255" class="bp bp-thin"/>
+  <text x="462" y="256" class="bp-txt-sm">ENGINE</text>
+
+  <!-- ===================== SIDE VIEW (right side) ===================== -->
+  <text x="780" y="52" class="bp-txt">SIDE VIEW</text>
+  <line x1="780" y1="56" x2="1300" y2="56" class="bp bp-thin"/>
+
+  <!-- ground line -->
+  <line x1="760" y1="300" x2="1320" y2="300" class="bp bp-mid"/>
+
+  <!-- chassis side profile -->
+  <!-- main body -->
+  <path d="M820,300 L820,180 L860,155 L960,145 L1100,145 L1160,155 L1200,180 L1240,200 L1240,300" class="bp bp-thick"/>
+
+  <!-- nose cone -->
+  <path d="M820,300 L820,240 L790,235 L775,248 L775,280 L800,300" class="bp bp-mid"/>
+
+  <!-- rear bodywork -->
+  <path d="M1240,200 L1270,195 L1285,210 L1285,300" class="bp bp-mid"/>
+
+  <!-- cockpit opening -->
+  <path d="M900,155 Q960,130 1060,130 Q1110,130 1140,148" class="bp bp-mid"/>
+  <path d="M900,155 Q960,138 1060,138 Q1105,138 1130,150" class="bp bp-thin"/>
+
+  <!-- floor / undertray -->
+  <line x1="800" y1="295" x2="1285" y2="295" class="bp bp-thin"/>
+
+  <!-- Front wheel side -->
+  <circle cx="840" cy="300" r="38" class="bp bp-thick"/>
+  <circle cx="840" cy="300" r="28" class="bp bp-mid"/>
+  <circle cx="840" cy="300" r="10" class="bp bp-thin"/>
+  <!-- wheel spokes -->
+  <line x1="840" y1="272" x2="840" y2="328" class="bp bp-thin"/>
+  <line x1="812" y1="300" x2="868" y2="300" class="bp bp-thin"/>
+  <line x1="820" y1="280" x2="860" y2="320" class="bp bp-thin"/>
+  <line x1="860" y1="280" x2="820" y2="320" class="bp bp-thin"/>
+
+  <!-- Rear wheel side -->
+  <circle cx="1230" cy="300" r="44" class="bp bp-thick"/>
+  <circle cx="1230" cy="300" r="32" class="bp bp-mid"/>
+  <circle cx="1230" cy="300" r="12" class="bp bp-thin"/>
+  <!-- spokes -->
+  <line x1="1230" y1="268" x2="1230" y2="332" class="bp bp-thin"/>
+  <line x1="1196" y1="300" x2="1264" y2="300" class="bp bp-thin"/>
+  <line x1="1207" y1="277" x2="1253" y2="323" class="bp bp-thin"/>
+  <line x1="1253" y1="277" x2="1207" y2="323" class="bp bp-thin"/>
+
+  <!-- front axle -->
+  <line x1="840" y1="280" x2="840" y2="195" class="bp bp-mid"/>
+  <line x1="830" y1="195" x2="880" y2="195" class="bp bp-mid"/>
+
+  <!-- rear axle -->
+  <line x1="1230" y1="270" x2="1230" y2="240" class="bp bp-mid"/>
+  <rect x="1100" y="235" width="200" height="12" rx="2" class="bp bp-mid"/>
+
+  <!-- engine side view -->
+  <rect x="1080" y="200" width="110" height="70" rx="4" class="bp bp-thick"/>
+  <rect x="1090" y="210" width="90" height="50" rx="2" class="bp bp-thin"/>
+  <line x1="1110" y1="210" x2="1110" y2="260" class="bp bp-thin"/>
+  <line x1="1135" y1="210" x2="1135" y2="260" class="bp bp-thin"/>
+  <line x1="1160" y1="210" x2="1160" y2="260" class="bp bp-thin"/>
+  <!-- exhaust -->
+  <path d="M1190,230 Q1220,228 1230,235 Q1245,242 1250,240" class="bp bp-mid"/>
+
+  <!-- fuel tank -->
+  <rect x="950" y="190" width="70" height="50" rx="6" class="bp bp-mid"/>
+  <rect x="958" y="198" width="54" height="34" rx="3" class="bp bp-thin"/>
+
+  <!-- driver helmet side -->
+  <ellipse cx="1010" cy="155" rx="35" ry="30" class="bp bp-mid"/>
+  <path d="M985,160 Q985,175 1000,178 Q1020,182 1040,175 L1042,160" class="bp bp-thin"/>
+  <!-- visor -->
+  <path d="M990,148 Q1010,140 1040,148" class="bp bp-thin"/>
+
+  <!-- steering shaft -->
+  <line x1="975" y1="175" x2="920" y2="195" class="bp bp-mid"/>
+
+  <!-- brake pedal area -->
+  <rect x="870" y="240" width="20" height="35" rx="2" class="bp bp-thin"/>
+  <rect x="895" y="245" width="20" height="30" rx="2" class="bp bp-thin"/>
+
+  <!-- side dimension lines -->
+  <line x1="780" y1="340" x2="1285" y2="340" class="bp-dim"/>
+  <line x1="780" y1="335" x2="780" y2="345" class="bp-dim"/>
+  <line x1="1285" y1="335" x2="1285" y2="345" class="bp-dim"/>
+  <text x="1032" y="337" class="bp-txt" text-anchor="middle">1700mm</text>
+
+  <line x1="760" y1="145" x2="760" y2="300" class="bp-dim"/>
+  <line x1="755" y1="145" x2="765" y2="145" class="bp-dim"/>
+  <line x1="755" y1="300" x2="765" y2="300" class="bp-dim"/>
+  <text x="756" y="228" class="bp-txt" text-anchor="end">420mm</text>
+
+  <!-- side annotations -->
+  <line x1="812" y1="265" x2="780" y2="245" class="bp bp-thin"/>
+  <text x="710" y="244" class="bp-txt-sm">FRONT WHEEL</text>
+
+  <line x1="1200" y1="262" x2="1175" y2="245" class="bp bp-thin"/>
+  <text x="1100" y="244" class="bp-txt-sm">REAR WHEEL ⌀ 220</text>
+
+  <line x1="1135" y1="200" x2="1100" y2="185" class="bp bp-thin"/>
+  <text x="1030" y="184" class="bp-txt-sm">ENGINE 6.5HP</text>
+
+  <line x1="985" y1="190" x2="970" y2="175" class="bp bp-thin"/>
+  <text x="930" y="174" class="bp-txt-sm">FUEL TANK</text>
+
+  <!-- ===================== FRONT VIEW (bottom left) ===================== -->
+  <text x="120" y="390" class="bp-txt">FRONT VIEW</text>
+  <line x1="120" y1="394" x2="480" y2="394" class="bp bp-thin"/>
+
+  <!-- ground -->
+  <line x1="100" y1="560" x2="500" y2="560" class="bp bp-mid"/>
+
+  <!-- front axle bar -->
+  <line x1="160" y1="460" x2="440" y2="460" class="bp bp-thick"/>
+  <!-- kingpins -->
+  <circle cx="175" cy="460" r="8" class="bp bp-mid"/>
+  <circle cx="425" cy="460" r="8" class="bp bp-mid"/>
+
+  <!-- front left wheel -->
+  <ellipse cx="155" cy="510" rx="18" ry="50" class="bp bp-thick"/>
+  <ellipse cx="155" cy="510" rx="12" ry="38" class="bp bp-mid"/>
+  <circle cx="155" cy="510" r="8" class="bp bp-thin"/>
+
+  <!-- front right wheel -->
+  <ellipse cx="445" cy="510" rx="18" ry="50" class="bp bp-thick"/>
+  <ellipse cx="445" cy="510" rx="12" ry="38" class="bp bp-mid"/>
+  <circle cx="445" cy="510" r="8" class="bp bp-thin"/>
+
+  <!-- chassis front face -->
+  <path d="M173,460 L190,420 L260,410 L340,410 L410,420 L427,460" class="bp bp-thick"/>
+  <!-- nose -->
+  <path d="M220,410 L250,400 L300,396 L350,400 L380,410" class="bp bp-mid"/>
+  <!-- front undertray -->
+  <line x1="190" y1="510" x2="410" y2="510" class="bp bp-mid"/>
+  <line x1="190" y1="500" x2="410" y2="500" class="bp bp-thin"/>
+
+  <!-- steering rack -->
+  <line x1="220" y1="450" x2="380" y2="450" class="bp bp-mid"/>
+  <rect x="275" y="443" width="50" height="14" rx="2" class="bp bp-thin"/>
+  <!-- tie rods -->
+  <line x1="183" y1="460" x2="225" y2="450" class="bp bp-thin"/>
+  <line x1="417" y1="460" x2="375" y2="450" class="bp bp-thin"/>
+
+  <!-- driver face front -->
+  <ellipse cx="300" cy="430" rx="30" ry="20" class="bp bp-thin"/>
+
+  <!-- front dim line -->
+  <line x1="137" y1="580" x2="463" y2="580" class="bp-dim"/>
+  <line x1="137" y1="575" x2="137" y2="585" class="bp-dim"/>
+  <line x1="463" y1="575" x2="463" y2="585" class="bp-dim"/>
+  <text x="300" y="578" class="bp-txt" text-anchor="middle">1080mm TRACK</text>
+
+  <!-- ===================== DETAIL / SPECS panel ===================== -->
+  <text x="560" y="390" class="bp-txt">TECHNICAL SPECIFICATIONS</text>
+  <line x1="560" y1="394" x2="760" y2="394" class="bp bp-thin"/>
+
+  <text x="560" y="415" class="bp-txt-sm">WHEELBASE    :  1050 mm</text>
+  <text x="560" y="430" class="bp-txt-sm">FRONT TRACK  :  1080 mm</text>
+  <text x="560" y="445" class="bp-txt-sm">REAR TRACK   :  1080 mm</text>
+  <text x="560" y="460" class="bp-txt-sm">OVERALL LEN  :  1700 mm</text>
+  <text x="560" y="475" class="bp-txt-sm">OVERALL WID  :  1150 mm</text>
+  <text x="560" y="490" class="bp-txt-sm">SEAT HEIGHT  :   280 mm</text>
+  <text x="560" y="505" class="bp-txt-sm">ENGINE       :  6.5HP OHV</text>
+  <text x="560" y="520" class="bp-txt-sm">FRAME        :  CrMo STEEL</text>
+  <text x="560" y="535" class="bp-txt-sm">WEIGHT       :   ~115 kg</text>
+  <text x="560" y="550" class="bp-txt-sm">BRAKES       :  DISC REAR</text>
+  <text x="560" y="565" class="bp-txt-sm">FUEL         :  PETROL 98RON</text>
+  <line x1="560" y1="572" x2="760" y2="572" class="bp bp-thin"/>
+
+  <!-- title block -->
+  <rect x="900" y="580" width="500" height="120" class="bp bp-mid"/>
+  <line x1="900" y1="610" x2="1400" y2="610" class="bp bp-thin"/>
+  <line x1="900" y1="640" x2="1400" y2="640" class="bp bp-thin"/>
+  <line x1="1100" y1="610" x2="1100" y2="700" class="bp bp-thin"/>
+  <line x1="1250" y1="610" x2="1250" y2="700" class="bp bp-thin"/>
+  <text x="1145" y="598" class="bp-txt" text-anchor="middle">TEAM VEGAM — FKDC 2026</text>
+  <text x="910" y="628" class="bp-txt-sm">DRAWING NO.</text>
+  <text x="910" y="638" class="bp-txt">TV-KRT-001</text>
+  <text x="1110" y="628" class="bp-txt-sm">SCALE</text>
+  <text x="1110" y="638" class="bp-txt">1:10</text>
+  <text x="1260" y="628" class="bp-txt-sm">SHEET</text>
+  <text x="1260" y="638" class="bp-txt">1 OF 1</text>
+  <text x="910" y="660" class="bp-txt-sm">MATERIAL</text>
+  <text x="910" y="670" class="bp-txt">CrMo 4130</text>
+  <text x="1110" y="660" class="bp-txt-sm">UNITS</text>
+  <text x="1110" y="670" class="bp-txt">MM</text>
+  <text x="1260" y="660" class="bp-txt-sm">COMPETITION</text>
+  <text x="1260" y="670" class="bp-txt">FKDC 2026</text>
+  <text x="910" y="692" class="bp-txt-sm">APPROVED BY: TEAM VEGAM ENGINEERING DEPT.</text>
+
+  <!-- border -->
+  <rect x="12" y="12" width="1416" height="876" class="bp bp-mid"/>
+  <rect x="20" y="20" width="1400" height="860" class="bp bp-thin"/>
+
+  <!-- cross hairs at corners -->
+  <line x1="20" y1="20" x2="50" y2="20" class="bp bp-thin"/>
+  <line x1="20" y1="20" x2="20" y2="50" class="bp bp-thin"/>
+  <line x1="1420" y1="20" x2="1390" y2="20" class="bp bp-thin"/>
+  <line x1="1420" y1="20" x2="1420" y2="50" class="bp bp-thin"/>
+  <line x1="20" y1="880" x2="50" y2="880" class="bp bp-thin"/>
+  <line x1="20" y1="880" x2="20" y2="850" class="bp bp-thin"/>
+  <line x1="1420" y1="880" x2="1390" y2="880" class="bp bp-thin"/>
+  <line x1="1420" y1="880" x2="1420" y2="850" class="bp bp-thin"/>
+</svg>
 </div>
 
-<!-- GATE / ENTRY -->
+
 <div id="gate">
   <div class="gate-logo">VEGAM</div>
   <div class="gate-sub">FKDC Kart Project · Team 52</div>
@@ -1118,58 +1437,7 @@ body::after {
 </footer>
 
 <script>
-/* ---- CHECKERED FLAG STRIP ---- */
-(function() {
-  const canvas = document.getElementById('flagCanvas');
-  const SIZE = 16;
-  let offset = 0;
-  let last = null;
 
-  function resize() {
-    canvas.width  = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-  }
-
-  function draw(ts) {
-    if (last === null) last = ts;
-    const delta = ts - last;
-    last = ts;
-
-    // advance by pixels-per-ms — keeps speed frame-rate independent
-    offset = (offset + delta * 0.04) % SIZE;
-
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-
-    const cols = Math.ceil(W / SIZE) + 1;
-    const rows = Math.ceil(H / SIZE) + 2;
-
-    for (let r = -1; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const x = c * SIZE;
-        const y = r * SIZE + offset;
-        ctx.fillStyle = (r + c) % 2 === 0
-          ? 'rgba(0,230,118,0.88)'
-          : 'rgba(0,0,0,0.88)';
-        ctx.fillRect(x, y, SIZE, SIZE);
-      }
-    }
-
-    // left-edge fade so it blends into the page
-    const grad = ctx.createLinearGradient(0, 0, W, 0);
-    grad.addColorStop(0, 'rgba(5,5,5,0.78)');
-    grad.addColorStop(0.55, 'rgba(5,5,5,0.0)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-
-    requestAnimationFrame(draw);
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-  requestAnimationFrame(draw);
-})();
 
 /* ---- VIDEO BG: play once, pause on last frame ---- */
 const heroBgVideo = document.getElementById('heroBgVideo');
