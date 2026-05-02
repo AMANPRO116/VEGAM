@@ -686,10 +686,314 @@ section:not(#home) { background: rgba(5,5,5,0.92); border-top: 1px solid var(--b
 .spec-val { color: white; font-family: 'Share Tech Mono', monospace; }
 .spec-val.highlight { color: var(--accent); }
 
-/* ========== TEAM ========== */
+/* team lead card special style */
+.crew-card.dept-lead .card-accent { background: linear-gradient(90deg,#ffd700,#00e676,#ffd700); }
+.crew-card.dept-lead { border-color: rgba(255,215,0,0.4); }
+.crew-card.dept-lead .card-role { color: #ffd700; }
+.crew-card.dept-lead .card-name { color: #ffd700; }
+
+/* ========== TRACK SECTION ========== */
+#track-section {
+  position: relative;
+  padding: 80px 40px;
+  background: rgba(5,5,5,0.95);
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+  text-align: center;
+}
+.track-wrap {
+  position: relative;
+  max-width: 900px;
+  margin: 48px auto 0;
+}
+.track-wrap img#trackImg {
+  width: 100%;
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(90deg) brightness(0.7);
+  opacity: 0.85;
+  display: block;
+}
+/* kart that drives around the track */
+#kartDot {
+  position: absolute;
+  width: 28px; height: 18px;
+  pointer-events: none;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+  transition: none;
+  filter: drop-shadow(0 0 8px rgba(0,230,118,0.9));
+}
+
+/* ========== ACHIEVEMENTS TIMELINE ========== */
+.achieve-chrono {
+  position: relative;
+  max-width: 1100px;
+  padding-bottom: 40px;
+}
+/* horizontal track line */
+.chrono-track {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  margin: 100px 0 140px;
+  overflow: visible;
+  cursor: pointer;
+}
+.chrono-track-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  width: 0%;
+}
+/* kart on timeline */
+#timelineKart {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  filter: drop-shadow(0 0 10px rgba(0,230,118,1));
+  pointer-events: all;
+  font-size: 28px;
+  line-height: 1;
+  cursor: grab;
+  user-select: none;
+}
+#timelineKart:active { cursor: grabbing; }
+.chrono-markers { pointer-events: all; }
+/* year markers */
+.chrono-markers {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  pointer-events: none;
+}
+.chrono-marker {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+.chrono-marker .marker-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+  margin: 0 auto;
+  transition: background 0.4s, transform 0.4s;
+  cursor: pointer;
+}
+.chrono-marker.passed .marker-dot {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+.chrono-marker .marker-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  transition: color 0.3s;
+  pointer-events: none;
+}
+.chrono-marker:nth-child(odd)  .marker-label { top: 22px; }
+.chrono-marker:nth-child(even) .marker-label { bottom: 22px; }
+.chrono-marker.passed .marker-label { color: var(--accent); }
+
+/* event cards below timeline */
+.chrono-events {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 0;
+}
+.chrono-event-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px 24px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s, transform 0.5s, border-color 0.3s;
+}
+.chrono-event-card.visible { opacity: 1; transform: translateY(0); }
+.chrono-event-card:hover { border-color: rgba(0,230,118,0.3); }
+.chrono-event-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.77,0,0.18,1);
+}
+.chrono-event-card:hover::before { transform: scaleX(1); }
+.ce-year {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; letter-spacing: 3px; color: var(--accent);
+  margin-bottom: 6px;
+}
+.ce-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px; color: white;
+  margin-bottom: 6px; line-height: 1.1;
+}
+.ce-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.ce-badge {
+  display: inline-block; margin-top: 10px;
+  font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; color: #000; background: var(--accent); padding: 4px 12px;
+}
+
+/* photo strips inside chrono cards */
+.ce-photos { display: flex; gap: 4px; margin-top: 12px; }
+.ce-photo { flex: 1; aspect-ratio: 4/3; overflow: hidden; }
+.ce-photo img { width:100%; height:100%; object-fit:cover; filter:brightness(0.8); transition:filter 0.3s; }
+.ce-photo:hover img { filter:brightness(1); }
+
+/* ========== CIRCULAR CAROUSEL ========== */
+
+/* 3D Carousel */
+.carousel-wrap {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 60px 0 80px;
+  perspective: 1200px;
+}
+.carousel-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+  height: 420px;
+  user-select: none;
+  cursor: grab;
+  transform-style: preserve-3d;
+}
+.carousel-track.dragging { cursor: grabbing; }
+
+.crew-card {
+  position: absolute;
+  width: 220px;
+  height: 320px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0e130e;
+  border: 1px solid var(--border);
+  transition: transform 0.5s cubic-bezier(0.23,1,0.32,1),
+              opacity 0.5s cubic-bezier(0.23,1,0.32,1),
+              box-shadow 0.5s;
+  flex-shrink: 0;
+  will-change: transform;
+}
+.crew-card .card-bg {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #0d1a0d 0%, #0a0f0a 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  position: relative;
+}
+/* colored top accent strip */
+.crew-card .card-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+/* large ghost number */
+.crew-card .card-ghost {
+  position: absolute;
+  top: 12px; right: 14px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0,230,118,0.12);
+  pointer-events: none;
+}
+/* dept icon area */
+.crew-card .card-dept-icon {
+  position: absolute;
+  top: 20px; left: 20px;
+  font-size: 22px;
+  opacity: 0.7;
+}
+
+.crew-card .card-role {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.crew-card .card-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 2px;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.crew-card .card-branch {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+/* dept colour tints per card */
+.crew-card.dept-powertrain .card-accent { background: linear-gradient(90deg,#00e676,#69ff47); }
+.crew-card.dept-steering   .card-accent { background: linear-gradient(90deg,#69ff47,#b2ff59); }
+.crew-card.dept-braking    .card-accent { background: linear-gradient(90deg,#00bcd4,#00e5ff); }
+.crew-card.dept-design     .card-accent { background: linear-gradient(90deg,#ffd700,#ffee58); }
+.crew-card.dept-business   .card-accent { background: linear-gradient(90deg,#ce93d8,#ab47bc); }
+
+/* carousel nav buttons */
+.carousel-nav {
+  display: flex; justify-content: center; gap: 16px; margin-top: 24px;
+}
+.carousel-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.carousel-btn:hover { background: var(--accent); color: #000; }
+
+.carousel-hint {
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-top: 16px;
+}
+.carousel-dots {
+  display: flex; justify-content: center; gap: 6px; margin-top: 16px;
+}
+.c-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, transform 0.3s;
+}
+.c-dot.active { background: var(--accent); transform: scale(1.4); }
+
+/* table below carousel */
 .dept-tabs {
   display: flex; flex-wrap: wrap; gap: 8px;
-  margin-bottom: 48px;
+  margin-bottom: 48px; margin-top: 72px;
 }
 .dept-tab {
   font-family: 'Share Tech Mono', monospace;
@@ -730,35 +1034,35 @@ section:not(#home) { background: rgba(5,5,5,0.92); border-top: 1px solid var(--b
 .roster-table tbody tr:hover { background: rgba(0,230,118,0.04); }
 .roster-table td {
   padding: 16px 16px;
-  font-size: 14px;
+  font-size: 16px;
   letter-spacing: 0.5px;
   vertical-align: middle;
 }
 .td-num {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
   width: 40px;
 }
 .td-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px;
+  font-size: 20px;
   letter-spacing: 2px;
   color: var(--text);
 }
 .td-branch {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   letter-spacing: 2px;
 }
 .dept-badge {
   display: inline-block;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 2px;
   white-space: nowrap;
 }
@@ -769,7 +1073,7 @@ section:not(#home) { background: rgba(5,5,5,0.92); border-top: 1px solid var(--b
 .dept-business    { background: rgba(180,0,255,0.10); color: #ce93d8; border: 1px solid rgba(180,0,255,0.22); }
 .td-email a {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
@@ -802,7 +1106,6 @@ section:not(#home) { background: rgba(5,5,5,0.92); border-top: 1px solid var(--b
   .roster-table td { padding: 4px 0; border: none; }
   .td-num { display: inline; margin-right: 8px; }
   .td-name { display: inline; }
-}
 }
 
 /* ========== TIMELINE ========== */
@@ -1417,6 +1720,25 @@ body::after {
   </div>
 </div>
 
+<!-- TRACK SECTION -->
+<section id="track-section">
+  <div class="section-header reveal" style="justify-content:center;flex-direction:column;align-items:center;text-align:center;gap:8px;margin-bottom:0">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:4px;color:var(--accent)">KARI MOTOR SPEEDWAY · COIMBATORE</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,56px);letter-spacing:4px">OUR RACE CIRCUIT</div>
+  </div>
+  <div class="track-wrap reveal">
+    <img id="trackImg" src="track.png" alt="Kari Motor Speedway Track Layout">
+    <!-- SVG kart icon -->
+    <svg id="kartDot" viewBox="0 0 40 26" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="10" width="32" height="10" rx="3" fill="#00e676"/>
+      <circle cx="9" cy="22" r="4" fill="#00e676"/>
+      <circle cx="31" cy="22" r="4" fill="#00e676"/>
+      <rect x="14" y="6" width="12" height="8" rx="2" fill="#002200"/>
+      <rect x="16" y="8" width="8" height="4" rx="1" fill="#00e676" opacity="0.4"/>
+    </svg>
+  </div>
+</section>
+
 <!-- ABOUT -->
 <section id="about">
   <div class="section-header reveal">
@@ -1471,159 +1793,75 @@ body::after {
     </div>
   </div>
 
-  <div class="achieve-timeline">
-
-    <!-- ===== 2016-17 · BAJA SAE INDIA ===== -->
-    <div class="achieve-era reveal">
-      <div class="era-header">
-        <div class="era-year">2016–17</div>
-        <div class="era-line"></div>
-        <div class="era-badge">🏆 2ND PRIZE</div>
-      </div>
-      <div class="achieve-body">
-        <div class="achieve-text-col">
-          <div class="achieve-event-title">BAJA SAEINDIA 2017</div>
-          <div class="achieve-desc">
-            The team won the <strong>second prize in the Cost category</strong> at BAJA SAEINDIA 2017 — a prestigious national-level off-road vehicle engineering competition. This was the <strong>first time</strong> the team from our campus participated in the Main BAJA SAEINDIA Race, marking a historic milestone for Team Vegam.
-          </div>
-          <div class="achieve-result-badge">2ND PRIZE · COST CATEGORY</div>
-        </div>
-        <div class="achieve-photos cols-2">
-          <div class="photo-item">
-            <img src="img1.png" alt="BAJA SAE team photo with vehicle" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img2.png" alt="BAJA SAEINDIA 2017 award ceremony" loading="lazy">
-          </div>
-        </div>
-      </div>
+  <div class="achieve-chrono">
+    <!-- Animated timeline track -->
+    <div style="text-align:center;margin-bottom:8px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted)">← DRAG THE KART TO EXPLORE OUR JOURNEY →</div>
+    <div class="chrono-track" id="chronoTrack">
+      <div class="chrono-track-fill" id="chronoFill"></div>
+      <div id="timelineKart">🏎</div>
+      <div class="chrono-markers" id="chronoMarkers"></div>
     </div>
 
-    <div class="achieve-divider"></div>
+    <!-- Event cards -->
+    <div class="chrono-events" id="chronoEvents">
 
-    <!-- ===== 2017-18 · GKDC ===== -->
-    <div class="achieve-era reveal">
-      <div class="era-header">
-        <div class="era-year">2017–18</div>
-        <div class="era-line"></div>
-        <div class="era-badge">GO KART DESIGN COMPETITION</div>
-      </div>
-      <div class="achieve-body">
-        <div class="achieve-text-col">
-          <div class="achieve-event-title">GKDC — GO KART DESIGN COMPETITION</div>
-          <div class="achieve-desc">
-            Team Vegam designed and built a <strong>Go-Kart</strong> and participated in the Go Kart Design Competition. The team showcased their engineering skills across static and dynamic events, demonstrating strong technical design and fabrication capabilities.
-          </div>
-        </div>
-        <div class="achieve-photos cols-2">
-          <div class="photo-item">
-            <img src="img3.png" alt="Blue Go-Kart #62" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img4.png" alt="GKDC 2017-18 team photo" loading="lazy">
-          </div>
+      <div class="chrono-event-card" data-year="2016">
+        <div class="ce-year">2016 – 17</div>
+        <div class="ce-title">BAJA SAEINDIA 2017</div>
+        <div class="ce-desc">First time competing at BAJA SAE India Main Race. Won <strong style="color:var(--accent)">2nd Prize in Cost Category</strong> — a landmark debut for Team Vegam.</div>
+        <div class="ce-badge">🏆 2ND PRIZE · COST CATEGORY</div>
+        <div class="ce-photos">
+          <div class="ce-photo"><img src="img1.png" alt="BAJA team" loading="lazy"></div>
+          <div class="ce-photo"><img src="img2.png" alt="BAJA award" loading="lazy"></div>
         </div>
       </div>
+
+      <div class="chrono-event-card" data-year="2017">
+        <div class="ce-year">2017 – 18</div>
+        <div class="ce-title">GKDC — GO KART DESIGN COMPETITION</div>
+        <div class="ce-desc">Designed and built a Formula Go-Kart from scratch. Competed in static and dynamic events showcasing engineering depth and fabrication quality.</div>
+        <div class="ce-photos">
+          <div class="ce-photo"><img src="img3.png" alt="Kart 62" loading="lazy"></div>
+          <div class="ce-photo"><img src="img4.png" alt="Team GKDC" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="chrono-event-card" data-year="2018">
+        <div class="ce-year">2018 – 19</div>
+        <div class="ce-title">GKDC · BUDDH INTERNATIONAL CIRCUIT</div>
+        <div class="ce-desc">Completed all Static & Dynamic events at Buddh International Circuit, Greater Noida. <strong style="color:var(--accent)">Overall Rank #11 nationally</strong> out of all competing teams.</div>
+        <div class="ce-badge">🏁 RANK #11 · NATIONALLY</div>
+        <div class="ce-photos">
+          <div class="ce-photo"><img src="img5.png" alt="Flag-off" loading="lazy"></div>
+          <div class="ce-photo"><img src="img6.png" alt="ESI team" loading="lazy"></div>
+          <div class="ce-photo"><img src="img7.png" alt="Race action" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="chrono-event-card" data-year="2022">
+        <div class="ce-year">2022 – 23</div>
+        <div class="ce-title">KART BUILD SEASON</div>
+        <div class="ce-desc">Returned with a fully redesigned Formula Kart — new chassis, improved dynamics and performance tuning in preparation for the national circuit.</div>
+        <div class="ce-photos">
+          <div class="ce-photo"><img src="img8.png" alt="Build 2022" loading="lazy"></div>
+          <div class="ce-photo"><img src="img9.png" alt="Team build" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="chrono-event-card" data-year="2023">
+        <div class="ce-year">2023 – 24</div>
+        <div class="ce-title">FKDC SEASON 8 · KARI MOTOR SPEEDWAY</div>
+        <div class="ce-desc">63 teams registered nationally. Only 45 qualified for the race after technical inspection. Team Vegam cleared all events and <strong style="color:var(--accent)">secured 8th Position nationally</strong>.</div>
+        <div class="ce-badge">🏆 8TH POSITION · NATIONAL LEVEL</div>
+        <div class="ce-photos">
+          <div class="ce-photo"><img src="img10.png" alt="FKDC team" loading="lazy"></div>
+          <div class="ce-photo"><img src="img11.png" alt="Kart on track" loading="lazy"></div>
+          <div class="ce-photo"><img src="img12.png" alt="Flag-off FKDC" loading="lazy"></div>
+          <div class="ce-photo"><img src="img13.png" alt="Race" loading="lazy"></div>
+        </div>
+      </div>
+
     </div>
-
-    <div class="achieve-divider"></div>
-
-    <!-- ===== 2018-19 · ESI ATV + GKDC Rank 11 ===== -->
-    <div class="achieve-era reveal">
-      <div class="era-header">
-        <div class="era-year">2018–19</div>
-        <div class="era-line"></div>
-        <div class="era-badge">OVERALL RANK #11</div>
-      </div>
-      <div class="achieve-body">
-        <div class="achieve-text-col">
-          <div class="achieve-event-title">GKDC · BUDDH INTERNATIONAL CIRCUIT</div>
-          <div class="achieve-desc">
-            Team VEGAM from Amrita School of Engineering, Bangalore designed and built a Go-Kart and participated in the <strong>6th GKDC competition</strong> held at <strong>Buddh International Circuit, Greater Noida, UP</strong>. The team completed all Static events (Technical Inspection, Turning Radius, Brake & Acceleration Test) and all Dynamics events (Auto Cross, Skid Pad and Endurance). <strong>Team secured Overall Rank #11</strong> nationally.
-          </div>
-          <div class="achieve-result-badge">OVERALL RANK #11 · NATIONALLY</div>
-          <div class="achieve-event-title" style="margin-top:28px">ESI ATV RACING CHAMPIONSHIP</div>
-          <div class="achieve-desc">Participated in the ESI ATV Racing Championship — a competitive all-terrain vehicle racing event at national level.</div>
-        </div>
-        <div class="achieve-photos cols-2">
-          <div class="photo-item">
-            <img src="img5.png" alt="Flag-off ceremony" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img6.png" alt="ESI ATV team group photo" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img7.png" alt="Off-road racing event" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="achieve-divider"></div>
-
-    <!-- ===== 2022-23 · FKDC S8 prep ===== -->
-    <div class="achieve-era reveal">
-      <div class="era-header">
-        <div class="era-year">2022–23</div>
-        <div class="era-line"></div>
-        <div class="era-badge">BUILD SEASON</div>
-      </div>
-      <div class="achieve-body">
-        <div class="achieve-text-col">
-          <div class="achieve-event-title">KART BUILD & PREPARATION</div>
-          <div class="achieve-desc">
-            Team Vegam returned with a new kart build season — designing, fabricating, and testing an all-new Formula Kart in preparation for the upcoming national competitions. The team refined their design process and pushed engineering standards higher.
-          </div>
-        </div>
-        <div class="achieve-photos cols-2">
-          <div class="photo-item">
-            <img src="img8.png" alt="Kart build 2022-23" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img9.png" alt="Team with kart 2022-23" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="achieve-divider"></div>
-
-    <!-- ===== 2023-24 · GKDC S11 + FKDC S8 ===== -->
-    <div class="achieve-era reveal">
-      <div class="era-header">
-        <div class="era-year">2023–24</div>
-        <div class="era-line"></div>
-        <div class="era-badge">🏁 8TH NATIONALLY · FKDC</div>
-      </div>
-      <div class="achieve-body">
-        <div class="achieve-text-col">
-          <div class="achieve-event-title">GKDC SEASON 11 · KARI MOTOR SPEEDWAY</div>
-          <div class="achieve-desc">
-            Team Vegam participated in <strong>GKDC Season 11</strong> conducted by ISNEE Motorsports at <strong>Kari Motor Speedway, Coimbatore</strong> — a prestigious national-level Go-Kart design challenge offering students maximum design flexibility and creative freedom.
-          </div>
-          <div class="achieve-event-title" style="margin-top:24px">FKDC SEASON 8 · KARI MOTOR SPEEDWAY</div>
-          <div class="achieve-desc">
-            <strong>Formula Kart Design Challenge Season 8</strong> conducted by FMAE at Kari Motor Speedway, Coimbatore. A national-level competition with <strong>63 registered teams</strong> from across India. Only 50 completed fabrication, only 45 cleared technical inspection and passed all dynamic tests to qualify for the race. <strong>Team Vegam secured 8th Position nationally.</strong>
-          </div>
-          <div class="achieve-result-badge">8TH POSITION · NATIONAL LEVEL</div>
-        </div>
-        <div class="achieve-photos cols-2">
-          <div class="photo-item">
-            <img src="img10.png" alt="FKDC Season 8 team" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img11.png" alt="Kart on track FKDC" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img12.png" alt="Flag-off FKDC" loading="lazy">
-          </div>
-          <div class="photo-item">
-            <img src="img13.png" alt="Race action at Kari Motor Speedway" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -1643,6 +1881,19 @@ body::after {
     <div class="t-stat"><div class="t-stat-num">5</div><div class="t-stat-label">Departments</div></div>
     <div class="t-stat"><div class="t-stat-num">5</div><div class="t-stat-label">Branches</div></div>
     <div class="t-stat"><div class="t-stat-num">1</div><div class="t-stat-label">Goal</div></div>
+  </div>
+
+  <!-- 3D Carousel -->
+  <div class="carousel-wrap reveal">
+    <div class="carousel-track" id="crewCarousel">
+      <!-- cards injected by JS -->
+    </div>
+    <div class="carousel-nav">
+      <button class="carousel-btn" id="prevBtn">‹</button>
+      <button class="carousel-btn" id="nextBtn">›</button>
+    </div>
+    <div class="carousel-dots" id="carouselDots"></div>
+    <div class="carousel-hint">DRAG TO EXPLORE</div>
   </div>
 
   <!-- Filter tabs -->
@@ -1814,9 +2065,9 @@ body::after {
         <td><span class="dept-badge dept-braking">Braking</span></td>
         <td class="td-email"><a href="mailto:saijayasurya.d@gmail.com">saijayasurya.d@gmail.com</a></td>
       </tr>
-      <tr data-dept="powertrain">
+      <tr data-dept="powertrain" style="border-left: 3px solid var(--accent); background: rgba(0,230,118,0.05);">
         <td class="td-num">22</td>
-        <td class="td-name">Burla Krishna Sashank</td>
+        <td class="td-name" style="color:var(--accent)">Burla Krishna Sashank <span style="font-size:11px;background:var(--accent);color:#000;padding:2px 8px;border-radius:2px;letter-spacing:2px;vertical-align:middle;margin-left:8px;">TEAM LEAD</span></td>
         <td class="td-branch">EEE</td>
         <td><span class="dept-badge dept-powertrain">Powertrain</span></td>
         <td class="td-email"><a href="mailto:sashank8642@gmail.com">sashank8642@gmail.com</a></td>
@@ -2079,6 +2330,347 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ---- ACHIEVEMENTS TIMELINE KART ---- */
+(function() {
+  const YEARS = [
+    { label: '2016–17', pct: 5 },
+    { label: '2017–18', pct: 25 },
+    { label: '2018–19', pct: 45 },
+    { label: '2022–23', pct: 70 },
+    { label: '2023–24', pct: 95 },
+  ];
+
+  const trackEl = document.getElementById('chronoTrack');
+  const fill    = document.getElementById('chronoFill');
+  const kart    = document.getElementById('timelineKart');
+  const mWrap   = document.getElementById('chronoMarkers');
+  const cards   = document.querySelectorAll('.chrono-event-card');
+  if (!trackEl) return;
+
+  // hide all cards initially
+  cards.forEach(c => c.classList.remove('visible'));
+
+  // Build markers
+  YEARS.forEach((y, i) => {
+    const m = document.createElement('div');
+    m.className = 'chrono-marker';
+    m.style.left = y.pct + '%';
+    m.innerHTML = `<div class="marker-dot"></div><div class="marker-label">${y.label}</div>`;
+    m.addEventListener('click', () => snapTo(i));
+    mWrap.appendChild(m);
+  });
+
+  let currentIdx = -1;
+
+  function setKartPct(pct) {
+    pct = Math.max(0, Math.min(100, pct));
+    fill.style.width = pct + '%';
+    kart.style.left  = pct + '%';
+    kart.style.transition = 'left 0.1s';
+
+    // Find which years are "passed"
+    YEARS.forEach((y, i) => {
+      const passed = pct >= y.pct - 3;
+      document.querySelectorAll('.chrono-marker')[i]?.classList.toggle('passed', passed);
+      if (passed && i > currentIdx) {
+        currentIdx = i;
+        // reveal card for this year
+        setTimeout(() => cards[i]?.classList.add('visible'), 80);
+      }
+      if (!passed && i <= currentIdx) {
+        // hide card if kart dragged back
+        cards[i]?.classList.remove('visible');
+        if (i <= currentIdx) currentIdx = i - 1;
+      }
+    });
+  }
+
+  function snapTo(idx) {
+    const y = YEARS[idx];
+    kart.style.transition = 'left 0.5s cubic-bezier(0.23,1,0.32,1)';
+    fill.style.transition = 'width 0.5s cubic-bezier(0.23,1,0.32,1)';
+    setKartPct(y.pct);
+    setTimeout(() => {
+      fill.style.transition = '';
+      kart.style.transition = '';
+    }, 500);
+  }
+
+  // Drag logic — mouse
+  let dragging = false;
+  let startX = 0, startPct = 0;
+
+  function getPct(clientX) {
+    const rect = trackEl.getBoundingClientRect();
+    return ((clientX - rect.left) / rect.width) * 100;
+  }
+
+  // Make kart itself draggable
+  kart.style.cursor = 'grab';
+  kart.addEventListener('mousedown', e => {
+    dragging = true;
+    kart.style.cursor = 'grabbing';
+    kart.style.transition = 'none';
+    fill.style.transition = 'none';
+    e.preventDefault();
+  });
+
+  // Also allow clicking anywhere on the track bar to jump
+  trackEl.addEventListener('click', e => {
+    if (dragging) return;
+    setKartPct(getPct(e.clientX));
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    setKartPct(getPct(e.clientX));
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    kart.style.cursor = 'grab';
+    // snap to nearest year
+    const curPct = parseFloat(kart.style.left);
+    let closest = 0, minDist = 999;
+    YEARS.forEach((y, i) => {
+      const d = Math.abs(y.pct - curPct);
+      if (d < minDist) { minDist = d; closest = i; }
+    });
+    snapTo(closest);
+  });
+
+  // Touch support
+  kart.addEventListener('touchstart', e => {
+    dragging = true;
+    kart.style.transition = 'none';
+    fill.style.transition = 'none';
+  }, { passive: true });
+
+  window.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    setKartPct(getPct(e.touches[0].clientX));
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    const curPct = parseFloat(kart.style.left) || 0;
+    let closest = 0, minDist = 999;
+    YEARS.forEach((y, i) => {
+      const d = Math.abs(y.pct - curPct);
+      if (d < minDist) { minDist = d; closest = i; }
+    });
+    snapTo(closest);
+  });
+
+  // Init kart at start
+  setKartPct(0);
+})();
+
+/* ---- TRACK KART ANIMATION ---- */
+(function() {
+  const kart = document.getElementById('kartDot');
+  const img  = document.getElementById('trackImg');
+  if (!kart || !img) return;
+
+  // Path points as % of image width/height
+  // Carefully traced along the outer racing line of the Kari Motor Speedway layout
+  // The track runs: long straight on top → right hairpin → long straight back → left complex → left oval loop
+  const PATH = [
+    // Top straight — left to right
+    [16, 32], [25, 26], [34, 23], [44, 22], [54, 22], [64, 23], [72, 24],
+    // Right side — entry to right chicane
+    [79, 26], [84, 30], [87, 36], [87, 43],
+    // Right hairpin bottom
+    [85, 51], [82, 57], [77, 61],
+    // Bottom straight — right to left
+    [70, 64], [61, 66], [52, 67], [43, 67], [34, 65],
+    // Left lower entry
+    [27, 62], [21, 57], [18, 51],
+    // Left complex — dip and chicane
+    [16, 44], [14, 38],
+    // Left oval section
+    [13, 34], [14, 29], [16, 26],
+    // back to start
+    [16, 32],
+  ];
+
+  let t = 0;
+  const SPEED = 0.0025; // speed of kart around track
+
+  function lerp(a, b, f) { return a + (b - a) * f; }
+
+  function getPos(progress) {
+    const n   = PATH.length - 1;
+    const raw = ((progress % 1) + 1) % 1 * n;
+    const idx = Math.floor(raw) % (PATH.length - 1);
+    const f   = raw - Math.floor(raw);
+    const p0  = PATH[idx];
+    const p1  = PATH[Math.min(idx + 1, PATH.length - 1)];
+    return [lerp(p0[0], p1[0], f), lerp(p0[1], p1[1], f)];
+  }
+
+  function getAngle(progress) {
+    const d   = 0.008;
+    const [x0, y0] = getPos(progress);
+    const [x1, y1] = getPos(progress + d);
+    return Math.atan2(y1 - y0, x1 - x0) * 180 / Math.PI;
+  }
+
+  function animate() {
+    t = (t + SPEED) % 1;
+
+    const iW = img.offsetWidth;
+    const iH = img.offsetHeight;
+    if (iW === 0) { requestAnimationFrame(animate); return; }
+
+    const [px, py] = getPos(t);
+    const angle    = getAngle(t);
+
+    kart.style.left      = (px / 100 * iW) + 'px';
+    kart.style.top       = (py / 100 * iH) + 'px';
+    kart.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
+
+    requestAnimationFrame(animate);
+  }
+
+  if (img.complete && img.naturalWidth > 0) animate();
+  else img.addEventListener('load', animate);
+})();
+
+/* ---- 3D CREW CAROUSEL ---- */
+(function() {
+  const MEMBERS = [
+    { name: 'Varthin Sakthivel',   role: 'Powertrain',        branch: 'EEE', dept: 'powertrain', icon: '⚡', num: '01' },
+    { name: 'Jonna Nikhil',        role: 'Powertrain',        branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '02' },
+    { name: 'Kunda Chudanath',     role: 'Steering',          branch: 'RAE', dept: 'steering',   icon: '🔧', num: '03' },
+    { name: 'Mudiam Sahasra',      role: 'Braking',           branch: 'MEE', dept: 'braking',    icon: '🛑', num: '04' },
+    { name: 'Rohan Sashank Reddy', role: 'Steering',          branch: 'RAE', dept: 'steering',   icon: '🔧', num: '05' },
+    { name: 'Madhumitha Winsraj',  role: 'Steering',          branch: 'ECE', dept: 'steering',   icon: '🔧', num: '06' },
+    { name: 'Sanjana Karthic',     role: 'Braking',           branch: 'RAE', dept: 'braking',    icon: '🛑', num: '07' },
+    { name: 'S. Muthusiva',        role: 'Design & Fab',      branch: 'RAE', dept: 'design',     icon: '🔩', num: '08' },
+    { name: 'Kerubakar B',         role: 'Powertrain',        branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '09' },
+    { name: 'Gireeshma',           role: 'Steering',          branch: 'RAE', dept: 'steering',   icon: '🔧', num: '10' },
+    { name: 'B. Neha Adhithi',     role: 'Design & Fab',      branch: 'RAE', dept: 'design',     icon: '🔩', num: '11' },
+    { name: 'Jayshandhya J.G',     role: 'Powertrain',        branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '12' },
+    { name: 'S.J. Yatish',         role: 'Powertrain',        branch: 'ECE', dept: 'powertrain', icon: '⚡', num: '13' },
+    { name: 'Anvi Talacheeru',     role: 'Powertrain',        branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '14' },
+    { name: 'Varikuti Karthik',    role: 'Powertrain',        branch: 'EEE', dept: 'powertrain', icon: '⚡', num: '15' },
+    { name: 'Muni Pranavi',        role: 'Powertrain',        branch: 'ECE', dept: 'powertrain', icon: '⚡', num: '16' },
+    { name: 'Aman Siddharth',      role: 'Design & Fab',      branch: 'RAE', dept: 'design',     icon: '🔩', num: '17' },
+    { name: 'M Sri Sai Prajwal',   role: 'Powertrain',        branch: 'EEE', dept: 'powertrain', icon: '⚡', num: '18' },
+    { name: 'Hem Ajhay K',         role: 'Design & Fab',      branch: 'MEE', dept: 'design',     icon: '🔩', num: '19' },
+    { name: 'Darshan Krishna',     role: 'Business Ops',      branch: 'EEE', dept: 'business',   icon: '📊', num: '20' },
+    { name: 'D. Sai Jaya Surya',   role: 'Braking',           branch: 'RAE', dept: 'braking',    icon: '🛑', num: '21' },
+    { name: 'Krishna Sashank',     role: 'TEAM LEAD',         branch: 'EEE', dept: 'lead',       icon: '👑', num: '22', isLead: true },
+    { name: 'M. Madheswaran',      role: 'Design & Fab',      branch: 'MEE', dept: 'design',     icon: '🔩', num: '23' },
+    { name: 'Haarish Kumar',       role: 'Braking',           branch: 'EEE', dept: 'braking',    icon: '🛑', num: '24' },
+    { name: 'V B Gireendra',       role: 'Business Ops',      branch: 'ELC', dept: 'business',   icon: '📊', num: '25' },
+  ];
+
+  const track  = document.getElementById('crewCarousel');
+  const dotsEl = document.getElementById('carouselDots');
+  let current  = 21; // start on Team Lead Sashank
+  const total  = MEMBERS.length;
+
+  // Build cards
+  MEMBERS.forEach((m, i) => {
+    const card = document.createElement('div');
+    card.className = `crew-card dept-${m.dept}`;
+    card.innerHTML = `
+      <div class="card-bg">
+        <div class="card-accent"></div>
+        <div class="card-ghost">${m.num}</div>
+        <div class="card-dept-icon">${m.icon}</div>
+        <div class="card-role">${m.role}</div>
+        <div class="card-name">${m.name}</div>
+        <div class="card-branch">${m.branch}</div>
+      </div>`;
+    card.addEventListener('click', () => { current = i; render(); });
+    track.appendChild(card);
+
+    const dot = document.createElement('div');
+    dot.className = 'c-dot';
+    dot.addEventListener('click', () => { current = i; render(); });
+    dotsEl.appendChild(dot);
+  });
+
+  function render() {
+    const cards = track.querySelectorAll('.crew-card');
+    const dots  = dotsEl.querySelectorAll('.c-dot');
+    const n     = cards.length;
+    const RADIUS   = 520;  // circle radius in px
+    const CARD_W   = 220;
+
+    cards.forEach((card, i) => {
+      // angle for this card relative to current (in degrees)
+      let diff = i - current;
+      // wrap to shortest path
+      if (diff >  n / 2) diff -= n;
+      if (diff < -n / 2) diff += n;
+
+      const angleRad = (diff / n) * 2 * Math.PI;
+      // circular X and Z positions
+      const x   = Math.sin(angleRad) * RADIUS;
+      const z   = Math.cos(angleRad) * RADIUS - RADIUS; // z=0 at front
+      const rotY = -diff * (360 / n);
+
+      const scale   = Math.max(0.4, 1 - Math.abs(diff) * 0.06);
+      const opacity = Math.max(0.0, 1 - Math.abs(diff) * 0.18);
+      const zIndex  = Math.round(100 - Math.abs(diff) * 3);
+
+      // hide cards that are behind (z too negative)
+      const visible = z > -RADIUS * 1.1;
+
+      card.style.transform   = `translateX(${x}px) translateZ(${z}px) scale(${scale})`;
+      card.style.opacity     = visible ? opacity : 0;
+      card.style.zIndex      = zIndex;
+      card.style.boxShadow   = diff === 0 ? '0 0 48px rgba(0,230,118,0.3)' : 'none';
+      card.style.pointerEvents = 'auto';
+    });
+
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  function next() { current = (current + 1) % total; render(); }
+  function prev() { current = (current - 1 + total) % total; render(); }
+
+  document.getElementById('nextBtn').addEventListener('click', next);
+  document.getElementById('prevBtn').addEventListener('click', prev);
+
+  // drag / swipe
+  let startX = 0, isDragging = false;
+  track.addEventListener('mousedown',  e => { isDragging = true; startX = e.clientX; track.classList.add('dragging'); });
+  track.addEventListener('mousemove',  e => { if (!isDragging) return; });
+  track.addEventListener('mouseup',    e => {
+    if (!isDragging) return; isDragging = false; track.classList.remove('dragging');
+    const dx = e.clientX - startX;
+    if (dx < -40) next();
+    else if (dx > 40) prev();
+  });
+  track.addEventListener('mouseleave', e => { isDragging = false; track.classList.remove('dragging'); });
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (dx < -40) next(); else if (dx > 40) prev();
+  });
+
+  // keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft')  prev();
+  });
+
+  // auto-advance
+  let autoTimer = setInterval(next, 3000);
+  track.addEventListener('mouseenter', () => clearInterval(autoTimer));
+  track.addEventListener('mouseleave', () => { autoTimer = setInterval(next, 3000); });
+
+  render();
+  window.addEventListener('resize', render);
+})();
 
 /* ---- DEPT FILTER TABS ---- */
 document.querySelectorAll('.dept-tab').forEach(tab => {
