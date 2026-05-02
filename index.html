@@ -266,10 +266,12 @@ body {
 #home {
   min-height: 100vh;
   display: flex; flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 40px 80px;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 40px;
   position: relative;
   overflow: hidden;
+  text-align: center;
 }
 
 /* hero-bg is just a subtle grid overlay */
@@ -310,7 +312,7 @@ body {
   user-select: none;
 }
 
-.hero-content { position: relative; z-index: 1; max-width: 900px; }
+.hero-content { position: relative; z-index: 4; max-width: 900px; width: 100%; display: flex; flex-direction: column; align-items: center; }
 
 .hero-tag {
   font-family: 'Share Tech Mono', monospace;
@@ -320,8 +322,14 @@ body {
   margin-bottom: 20px;
   display: flex; align-items: center; gap: 12px;
   text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.9);
+  justify-content: center;
 }
 .hero-tag::before {
+  content: '';
+  width: 40px; height: 1px;
+  background: var(--accent);
+}
+.hero-tag::after {
   content: '';
   width: 40px; height: 1px;
   background: var(--accent);
@@ -335,14 +343,16 @@ body {
   margin-bottom: 32px;
   color: #fff;
   text-shadow: 0 2px 24px rgba(0,0,0,1), 0 0 60px rgba(0,0,0,0.8);
+  text-align: center;
 }
 .hero-title .line2 { color: var(--accent); display: block; text-shadow: 0 2px 24px rgba(0,0,0,0.9), 0 0 40px rgba(0,230,118,0.3); }
 
 .hero-stats {
   display: flex; gap: 48px; margin-bottom: 48px;
   flex-wrap: wrap;
+  justify-content: center;
 }
-.stat { display: flex; flex-direction: column; }
+.stat { display: flex; flex-direction: column; align-items: center; }
 .stat-num {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 42px;
@@ -361,7 +371,7 @@ body {
 }
 
 .hero-cta {
-  display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
+  display: flex; gap: 20px; flex-wrap: wrap; align-items: center; justify-content: center;
 }
 .btn-primary {
   padding: 14px 40px;
