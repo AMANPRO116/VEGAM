@@ -3,54 +3,133 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Team Vegam | FKDC Kart</title>
 
 <style>
+:root { --accent:#00ffcc; }
+
+* { box-sizing: border-box; }
 body {
   margin: 0;
-  overflow: hidden;
   font-family: Arial, sans-serif;
   background: black;
   color: white;
+  overflow-x: hidden;
 }
 
-/* Video */
-#video {
+/* ===== VIDEO LAYER ===== */
+#videoWrap {
   position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+#video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: filter 1.5s, opacity 1.5s;
+  transition: filter 1.5s ease, opacity 1.5s ease, transform 1.5s ease;
 }
 
-/* Menu */
+/* dark vignette for cinematic look */
+#vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(transparent 60%, rgba(0,0,0,0.85));
+}
+
+/* ===== START BUTTON (for audio autoplay policies) ===== */
+#startBtn {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 5;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  transition: opacity .6s ease;
+}
+#startBtn button{
+  padding: 16px 28px;
+  font-size: 20px;
+  border: 2px solid var(--accent);
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: .3s;
+}
+#startBtn button:hover{
+  background: var(--accent);
+  color: black;
+  transform: scale(1.05);
+}
+
+/* ===== TITLE OVER VIDEO ===== */
+#title {
+  position: absolute;
+  top: 45%;
+  width: 100%;
+  text-align: center;
+  font-size: 64px;
+  letter-spacing: 8px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 1s ease;
+  z-index: 4;
+}
+#title.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== MENU ===== */
 #menu {
   position: absolute;
   top: 40%;
   width: 100%;
   text-align: center;
   opacity: 0;
-  filter: blur(10px);
-  transition: all 2s;
+  filter: blur(14px);
+  transition: 1.5s ease;
+  z-index: 4;
 }
-
+#menu.show {
+  opacity: 1;
+  filter: blur(0);
+}
 #menu a {
   display: block;
-  margin: 12px;
-  font-size: 28px;
+  margin: 14px;
+  font-size: 30px;
   color: white;
   text-decoration: none;
-  transition: 0.3s;
+  transition: .3s;
 }
-
 #menu a:hover {
-  color: #00ffcc;
+  color: var(--accent);
   transform: scale(1.1);
 }
 
-.show {
-  opacity: 1;
-  filter: blur(0px);
+/* ===== SCROLL SECTIONS ===== */
+section {
+  min-height: 100vh;
+  padding: 80px 20px;
+  background: #0b0b0b;
+  border-top: 1px solid #222;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 3px;
+}
+.container {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+  line-height: 1.6;
 }
 </style>
 
@@ -58,42 +137,107 @@ body {
 
 <body>
 
+<!-- START BUTTON -->
+
+<div id="startBtn">
+  <button>ENTER EXPERIENCE</button>
+</div>
+
 <!-- VIDEO -->
 
-<video id="video" autoplay muted playsinline>
-  <source src="intro.mp4" type="video/mp4">
-</video>
+<div id="videoWrap">
+  <video id="video" playsinline preload="auto" poster="poster.jpg">
+    <source src="intro.mp4" type="video/mp4">
+  </video>
+  <div id="vignette"></div>
+</div>
+
+<!-- AUDIO -->
+
+<audio id="audio" src="intro.mp3"></audio>
+
+<!-- TITLE -->
+
+<div id="title">TEAM VEGAM</div>
 
 <!-- MENU -->
 
 <div id="menu">
-  <a href="#">Home</a>
-  <a href="#">About</a>
-  <a href="#">Meet the Team</a>
-  <a href="#">Contact Us</a>
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#team">Meet the Team</a>
+  <a href="#contact">Contact</a>
 </div>
+
+<!-- SECTIONS -->
+
+<section id="home">
+  <h1>HOME</h1>
+  <div class="container">Welcome to Team Vegam — FKDC Kart Project.</div>
+</section>
+
+<section id="about">
+  <h1>ABOUT</h1>
+  <div class="container">Details about your kart design, goals, and innovation.</div>
+</section>
+
+<section id="team">
+  <h1>TEAM</h1>
+  <div class="container">Add your team members here.</div>
+</section>
+
+<section id="contact">
+  <h1>CONTACT</h1>
+  <div class="container">Email, socials, etc.</div>
+</section>
 
 <script>
 const video = document.getElementById("video");
+const audio = document.getElementById("audio");
+const startBtn = document.getElementById("startBtn");
+const title = document.getElementById("title");
 const menu = document.getElementById("menu");
 
-/* When video ends */
-video.onended = () => {
+/* CLICK TO START (enables sound) */
+startBtn.onclick = () => {
+  startBtn.style.opacity = 0;
+  setTimeout(()=> startBtn.style.display="none", 600);
 
-  // Blur + fade video
-  video.style.filter = "blur(20px)";
-  video.style.opacity = "0";
+  video.currentTime = 0;
+  video.play();
 
-  // Show menu
-  setTimeout(() => {
-    menu.classList.add("show");
-  }, 1000);
+  audio.currentTime = 0;
+  audio.play().catch(()=>{}); // safe play
 };
 
-/* Fallback (if autoplay timing needed) */
-setTimeout(() => {
-  video.onended();
-}, 4500); // ~4.5 sec (100 frames @ 24fps)
+/* TITLE APPEAR */
+setTimeout(()=> {
+  title.classList.add("show");
+}, 1000);
+
+/* WHEN VIDEO ENDS → CINEMATIC TRANSITION */
+video.onended = () => {
+  video.style.filter = "blur(25px)";
+  video.style.transform = "scale(1.2)";
+  video.style.opacity = "0";
+
+  setTimeout(()=> {
+    menu.classList.add("show");
+    document.body.style.overflowY = "auto";
+  }, 1200);
+};
+
+/* fallback in case video doesn't fire ended */
+setTimeout(()=> video.onended(), 4500);
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
+  anchor.addEventListener('click', function(e){
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href'))
+      .scrollIntoView({ behavior: 'smooth' });
+  });
+});
 </script>
 
 </body>
