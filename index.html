@@ -1720,6 +1720,8 @@ body::after {
 
 <script>
 
+// Lock scroll while gate is showing
+document.body.style.overflowY = 'hidden';
 
 /* ---- VIDEO BG: play once, pause on last frame ---- */
 const heroBgVideo = document.getElementById('heroBgVideo');
@@ -1831,18 +1833,23 @@ function revealSite() {
 })();
 
 /* ---- GATE BUTTON ---- */
+document.getElementById('enterBtn').addEventListener('click', () => {
   gate.classList.add('gone');
   setTimeout(() => {
     gate.style.display = 'none';
-
-    // Start the background video
     heroBgVideo.play().catch(() => {});
     bgAudio.play().catch(() => {});
-
-    // Reveal site UI after a beat so the video has time to appear
     setTimeout(revealSite, 600);
-  }, 800);
+  }, 900);
 });
+
+// Emergency failsafe — if gate is still visible after 10s, force-dismiss
+setTimeout(() => {
+  if (gate.style.display !== 'none') {
+    gate.style.display = 'none';
+    revealSite();
+  }
+}, 10000);
 
 /* ---- SCROLL REVEAL ---- */
 const observer = new IntersectionObserver((entries) => {
