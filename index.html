@@ -6,42 +6,6 @@
 <title>Team Vegam | FKDC Kart</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-
-  /* ABOUT BACKGROUND VIDEO */
-#about {
-  position: relative;
-  overflow: hidden;
-}
-
-/* Video container */
-.about-video-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -2;
-}
-
-.about-video-bg video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: blur(8px) brightness(0.4);
-}
-
-/* Dark overlay for readability */
-#about::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: -1;
-}
-  
 :root {
   --accent: #00e676;
   --accent2: #69ff47;
@@ -62,6 +26,31 @@ body {
 }
 
 
+
+/* ========== ABOUT BACKGROUND VIDEO ========== */
+#about {
+  position: relative;
+  overflow: hidden;
+}
+.about-video-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -2;
+}
+.about-video-bg video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: blur(8px) brightness(0.35);
+}
+#about::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: -1;
+}
 
 /* ========== LOADER / ENTRY ========== */
 #gate {
@@ -690,6 +679,9 @@ section:not(#home) { background: rgba(5,5,5,0.92); border-top: 1px solid var(--b
 }
 
 /* ========== ABOUT ========== */
+.about-grid,
+#about .section-header { position: relative; z-index: 1; }
+
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1753,22 +1745,20 @@ body::after {
     <div style="font-family:'Rajdhani',sans-serif;font-size:clamp(32px,5vw,56px);letter-spacing:4px">OUR RACE CIRCUIT</div>
   </div>
   <div class="track-wrap">
- <video id="trackVid" autoplay muted loop playsinline preload="auto"
-  style="width:100%;display:block;border-radius:4px;border:1px solid var(--border);">
-  <source src="newtrack.mp4" type="video/mp4">
-</video>
+    <video id="trackVid" autoplay muted loop playsinline preload="auto"
+      style="width:100%;display:block;border-radius:4px;border:1px solid var(--border);">
+      <source src="track1.mp4" type="video/mp4">
+    </video>
   </div>
 </section>
 
 <!-- ABOUT -->
 <section id="about">
-
   <div class="about-video-bg">
-  <video autoplay muted loop playsinline>
-    <source src="newtrack.mp4" type="video/mp4">
-  </video>
-</div>
-  
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="track1.mp4" type="video/mp4">
+    </video>
+  </div>
   <div class="section-header reveal">
     <div class="section-num">01</div>
     <div>
@@ -1897,6 +1887,18 @@ body::after {
         <div class="ce-photos">
           <div class="ce-photo"><img src="ddc.jpeg" alt="Team Velastra DDC 2026" loading="lazy"></div>
           <div class="ce-photo"><img src="ddc2.jpeg" alt="DDC Drone DDC2026070" loading="lazy"></div>
+        </div>
+      </div>
+
+      <div class="chrono-event-card" data-year="2026">
+        <div class="ce-year">2025 – 26</div>
+        <div class="ce-title">BAJA SAEINDIA 2026 · TEAM AMEYA</div>
+        <div class="ce-desc">Team Ameya from Amrita School of Engineering, Bengaluru competed at <strong style="color:var(--accent)">BAJA SAE India 2026</strong>. Secured <strong style="color:var(--accent)">11th Place in Design Presentation</strong> and <strong style="color:var(--accent)">AIR 33 in the Overall Category</strong> — continuing the team's legacy of national-level performance.</div>
+        <div class="ce-badge" style="margin-right:8px">🎨 11TH · DESIGN PRESENTATION</div>
+        <div class="ce-badge" style="margin-top:6px;display:inline-block">🏁 AIR 33 · OVERALL</div>
+        <div class="ce-photos">
+          <div class="ce-photo"><img src="baja1.jpeg" alt="Team Ameya BAJA 2026" loading="lazy"></div>
+          <div class="ce-photo"><img src="baja2.jpeg" alt="Team Ameya BAJA SAE India 2026" loading="lazy"></div>
         </div>
       </div>
 
@@ -2370,27 +2372,27 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-/* ---- TRACK VIDEO NUDGE ---- */
+/* ---- TRACK + ABOUT VIDEO NUDGE ---- */
 (function() {
-  const vid = document.getElementById('trackVid');
-  if (!vid) return;
+  const vids = [
+    document.getElementById('trackVid'),
+    document.querySelector('#about .about-video-bg video'),
+  ];
 
-  function tryPlay() {
-    vid.play().catch(() => {});
-  }
+  function tryPlay(v) { if (v) v.play().catch(() => {}); }
 
-  // Try immediately
-  tryPlay();
+  vids.forEach(tryPlay);
 
-  // Also try once scrolled into view (handles browsers that block offscreen autoplay)
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) tryPlay(); });
-  }, { threshold: 0.1 });
-  obs.observe(vid);
+  vids.forEach(v => {
+    if (!v) return;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) tryPlay(v); });
+    }, { threshold: 0.1 });
+    obs.observe(v);
+  });
 
-  // Also try when gate is dismissed
   document.getElementById('enterBtn')?.addEventListener('click', () => {
-    setTimeout(tryPlay, 1000);
+    setTimeout(() => vids.forEach(tryPlay), 1000);
   });
 })();
 
@@ -2398,11 +2400,12 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 (function() {
   const YEARS = [
     { label: '2016–17', pct: 3  },
-    { label: '2017–18', pct: 21 },
-    { label: '2018–19', pct: 39 },
-    { label: '2022–23', pct: 57 },
-    { label: '2023–24', pct: 76 },
-    { label: '2025–26', pct: 95 },
+    { label: '2017–18', pct: 18 },
+    { label: '2018–19', pct: 33 },
+    { label: '2022–23', pct: 48 },
+    { label: '2023–24', pct: 63 },
+    { label: 'DDC 2026', pct: 80 },
+    { label: 'BAJA 2026', pct: 95 },
   ];
 
   const trackEl = document.getElementById('chronoTrack');
