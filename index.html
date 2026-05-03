@@ -1286,6 +1286,103 @@ footer {
   transform: translateY(0);
 }
 
+/* ========== MODAL PANEL SYSTEM ========== */
+/* Hide all sections from normal scroll flow */
+section:not(#home),
+#countdown-banner,
+#track-section {
+  display: none !important;
+}
+
+/* Modal backdrop */
+#modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 800;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s;
+}
+#modal-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Panel drawer - slides up from bottom */
+#modal-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 88vh;
+  background: #050505;
+  border-top: 1px solid var(--accent);
+  z-index: 801;
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.23,1,0.32,1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+#modal-panel.open {
+  transform: translateY(0);
+}
+#modal-panel::-webkit-scrollbar { width: 4px; }
+#modal-panel::-webkit-scrollbar-track { background: transparent; }
+#modal-panel::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+/* Panel close button */
+#modal-close {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: rgba(5,5,5,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+#modal-close-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+#modal-close-btn:hover { border-color: var(--accent); color: var(--accent); }
+#modal-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* Panel content area */
+#modal-content {
+  padding: 0;
+}
+/* sections inside modal render normally */
+#modal-content section,
+#modal-content > div {
+  display: block !important;
+  border-top: none !important;
+}
+
+/* Nav links become buttons */
+.nav-links a {
+  cursor: pointer;
+}
+.nav-links a.active-panel { color: var(--accent); }
+.nav-links a.active-panel::after { width: 100%; }
+
 /* ========== NOISE OVERLAY ========== */
 body::after {
   content: '';
@@ -1647,6 +1744,16 @@ body::after {
 <!-- AUDIO -->
 <audio id="bgAudio" src="intro.mp3"></audio>
 
+<!-- MODAL OVERLAY -->
+<div id="modal-backdrop"></div>
+<div id="modal-panel">
+  <div id="modal-close">
+    <div id="modal-title">—</div>
+    <button id="modal-close-btn">✕</button>
+  </div>
+  <div id="modal-content"></div>
+</div>
+
 <!-- NAVBAR -->
 <nav id="navbar">
   <div class="nav-inner">
@@ -1711,10 +1818,6 @@ body::after {
         <div class="stat-num">1<span>st</span></div>
         <div class="stat-label">Target Position</div>
       </div>
-    </div>
-    <div class="hero-cta reveal" style="transition-delay:0.3s">
-      <a href="#about" class="btn-primary">Our Build</a>
-      <a href="#team" class="btn-ghost">Meet The Team</a>
     </div>
   </div>
 </section>
@@ -2681,13 +2784,320 @@ document.querySelectorAll('.dept-tab').forEach(tab => {
 });
 
 
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
+/* ---- MODAL PANEL SYSTEM ---- */
+(function() {
+  const backdrop  = document.getElementById('modal-backdrop');
+  const panel     = document.getElementById('modal-panel');
+  const content   = document.getElementById('modal-content');
+  const titleEl   = document.getElementById('modal-title');
+  const closeBtn  = document.getElementById('modal-close-btn');
+
+  // Map of section IDs to display labels
+  const SECTIONS = {
+    'about':        'About The Project',
+    'achievements': 'Achievements',
+    'team':         'The Crew',
+    'timeline':     'Race To Launch',
+    'contact':      'Get In Touch',
+  };
+
+  // Also include countdown + track in "about" panel
+  const EXTRAS = {
+    'about': ['countdown-banner', 'track-section'],
+  };
+
+  function openPanel(id) {
+    const src = document.getElementById(id);
+    if (!src) return;
+
+    // Clone section into modal
+    content.innerHTML = '';
+
+    // For 'about', prepend countdown and track
+    const extras = EXTRAS[id] || [];
+    extras.forEach(eid => {
+      const el = document.getElementById(eid);
+      if (el) content.appendChild(el.cloneNode(true));
+    });
+
+    content.appendChild(src.cloneNode(true));
+
+    // Re-init videos inside cloned content
+    content.querySelectorAll('video').forEach(v => {
+      v.muted = true;
+      v.loop = true;
+      v.play().catch(() => {});
+    });
+
+    // Re-init scroll reveals inside panel
+    content.querySelectorAll('.reveal').forEach(el => {
+      el.classList.add('visible');
+    });
+
+    // Re-init timeline kart if achievements panel
+    if (id === 'achievements') initTimelineInPanel();
+
+    // Re-init carousel if team panel
+    if (id === 'team') initCarouselInPanel();
+
+    // Re-init dept filter if team panel
+    if (id === 'team') initDeptFilterInPanel();
+
+    titleEl.textContent = SECTIONS[id] || id;
+    panel.scrollTop = 0;
+
+    // Mark active nav link
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.classList.toggle('active-panel', a.dataset.panel === id);
+    });
+
+    backdrop.classList.add('open');
+    panel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePanel() {
+    backdrop.classList.remove('open');
+    panel.classList.remove('open');
+    document.body.style.overflow = '';
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active-panel'));
+    setTimeout(() => { content.innerHTML = ''; }, 460);
+  }
+
+  closeBtn.addEventListener('click', closePanel);
+  backdrop.addEventListener('click', closePanel);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+  // Wire up nav links
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const href = a.getAttribute('href')?.replace('#', '');
+    if (href && SECTIONS[href]) {
+      a.dataset.panel = href;
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        openPanel(href);
+      });
+    }
   });
-});
+
+  // ---- Re-init timeline inside panel ----
+  function initTimelineInPanel() {
+    const YEARS = [
+      { label: '2016–17', pct: 3  },
+      { label: '2017–18', pct: 18 },
+      { label: '2018–19', pct: 33 },
+      { label: '2022–23', pct: 48 },
+      { label: '2023–24', pct: 63 },
+      { label: 'DDC 2026', pct: 80 },
+      { label: 'BAJA 2026', pct: 95 },
+    ];
+
+    const trackEl = content.querySelector('#chronoTrack');
+    const fill    = content.querySelector('#chronoFill');
+    const kart    = content.querySelector('#timelineKart');
+    const mWrap   = content.querySelector('#chronoMarkers');
+    const cards   = content.querySelectorAll('.chrono-event-card');
+    if (!trackEl) return;
+
+    cards.forEach(c => { c.classList.remove('visible'); c.style.display = 'none'; });
+    mWrap.innerHTML = '';
+
+    YEARS.forEach((y, i) => {
+      const m = document.createElement('div');
+      m.className = 'chrono-marker';
+      m.style.left = y.pct + '%';
+      m.innerHTML = `<div class="marker-dot"></div><div class="marker-label">${y.label}</div>`;
+      m.addEventListener('click', () => snapTo(i));
+      mWrap.appendChild(m);
+    });
+
+    let activeIdx = -1;
+
+    function showOnly(idx) {
+      cards.forEach(c => { c.classList.remove('visible'); c.style.display = 'none'; });
+      content.querySelectorAll('.chrono-marker').forEach((m, i) => m.classList.toggle('passed', i === idx));
+      if (idx >= 0 && idx < cards.length) {
+        cards[idx].style.display = '';
+        setTimeout(() => cards[idx].classList.add('visible'), 60);
+      }
+      activeIdx = idx;
+    }
+
+    function hideAll() {
+      cards.forEach(c => { c.classList.remove('visible'); c.style.display = 'none'; });
+      content.querySelectorAll('.chrono-marker').forEach(m => m.classList.remove('passed'));
+      activeIdx = -1;
+    }
+
+    function getPct(clientX) {
+      const rect = trackEl.getBoundingClientRect();
+      return ((clientX - rect.left) / rect.width) * 100;
+    }
+
+    function setKartPct(pct) {
+      pct = Math.max(0, Math.min(100, pct));
+      fill.style.width = pct + '%';
+      kart.style.left  = pct + '%';
+      let nearest = -1, minDist = 999;
+      YEARS.forEach((y, i) => { const d = Math.abs(y.pct - pct); if (d < minDist) { minDist = d; nearest = i; } });
+      if (minDist < 6) { if (nearest !== activeIdx) showOnly(nearest); }
+      else { if (activeIdx !== -1) hideAll(); }
+    }
+
+    function snapTo(idx) {
+      activeIdx = -1;
+      kart.style.transition = 'left 0.5s cubic-bezier(0.23,1,0.32,1)';
+      fill.style.transition  = 'width 0.5s cubic-bezier(0.23,1,0.32,1)';
+      setKartPct(YEARS[idx].pct);
+      setTimeout(() => { kart.style.transition = ''; fill.style.transition = ''; }, 520);
+    }
+
+    let dragging = false;
+    kart.style.cursor = 'grab';
+    kart.addEventListener('mousedown', e => { dragging = true; kart.style.cursor = 'grabbing'; kart.style.transition = 'none'; fill.style.transition = 'none'; e.preventDefault(); });
+    trackEl.addEventListener('click', e => {
+      if (dragging) return;
+      const p = getPct(e.clientX);
+      let nearest = 0, minD = 999;
+      YEARS.forEach((y, i) => { const d = Math.abs(y.pct - p); if (d < minD) { minD = d; nearest = i; } });
+      snapTo(nearest);
+    });
+    window.addEventListener('mousemove', e => { if (dragging) setKartPct(getPct(e.clientX)); });
+    window.addEventListener('mouseup', () => {
+      if (!dragging) return; dragging = false; kart.style.cursor = 'grab';
+      const p = parseFloat(kart.style.left) || 0;
+      let nearest = 0, minD = 999;
+      YEARS.forEach((y, i) => { const d = Math.abs(y.pct - p); if (d < minD) { minD = d; nearest = i; } });
+      snapTo(nearest);
+    });
+    kart.addEventListener('touchstart', () => { dragging = true; kart.style.transition = 'none'; fill.style.transition = 'none'; }, { passive: true });
+    window.addEventListener('touchmove', e => { if (dragging) setKartPct(getPct(e.touches[0].clientX)); }, { passive: true });
+    window.addEventListener('touchend', () => {
+      if (!dragging) return; dragging = false;
+      const p = parseFloat(kart.style.left) || 0;
+      let nearest = 0, minD = 999;
+      YEARS.forEach((y, i) => { const d = Math.abs(y.pct - p); if (d < minD) { minD = d; nearest = i; } });
+      snapTo(nearest);
+    });
+    setKartPct(0);
+  }
+
+  // ---- Re-init carousel inside panel ----
+  function initCarouselInPanel() {
+    const MEMBERS = [
+      { name: 'Varthin Sakthivel', role: 'Powertrain', branch: 'EEE', dept: 'powertrain', icon: '⚡', num: '01' },
+      { name: 'Jonna Nikhil', role: 'Powertrain', branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '02' },
+      { name: 'Kunda Chudanath', role: 'Steering', branch: 'RAE', dept: 'steering', icon: '🔧', num: '03' },
+      { name: 'Mudiam Sahasra', role: 'Braking', branch: 'MEE', dept: 'braking', icon: '🛑', num: '04' },
+      { name: 'Rohan Sashank Reddy', role: 'Steering', branch: 'RAE', dept: 'steering', icon: '🔧', num: '05' },
+      { name: 'Madhumitha Winsraj', role: 'Steering', branch: 'ECE', dept: 'steering', icon: '🔧', num: '06' },
+      { name: 'Sanjana Karthic', role: 'Braking', branch: 'RAE', dept: 'braking', icon: '🛑', num: '07' },
+      { name: 'S. Muthusiva', role: 'Design & Fab', branch: 'RAE', dept: 'design', icon: '🔩', num: '08' },
+      { name: 'Kerubakar B', role: 'Powertrain', branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '09' },
+      { name: 'Gireeshma', role: 'Steering', branch: 'RAE', dept: 'steering', icon: '🔧', num: '10' },
+      { name: 'B. Neha Adhithi', role: 'Design & Fab', branch: 'RAE', dept: 'design', icon: '🔩', num: '11' },
+      { name: 'Jayshandhya J.G', role: 'Powertrain', branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '12' },
+      { name: 'S.J. Yatish', role: 'Powertrain', branch: 'ECE', dept: 'powertrain', icon: '⚡', num: '13' },
+      { name: 'Anvi Talacheeru', role: 'Powertrain', branch: 'ELC', dept: 'powertrain', icon: '⚡', num: '14' },
+      { name: 'Varikuti Karthik', role: 'Powertrain', branch: 'EEE', dept: 'powertrain', icon: '⚡', num: '15' },
+      { name: 'Muni Pranavi', role: 'Powertrain', branch: 'ECE', dept: 'powertrain', icon: '⚡', num: '16' },
+      { name: 'Aman Siddharth', role: 'Design & Fab', branch: 'RAE', dept: 'design', icon: '🔩', num: '17' },
+      { name: 'M Sri Sai Prajwal', role: 'Powertrain', branch: 'EEE', dept: 'powertrain', icon: '⚡', num: '18' },
+      { name: 'Hem Ajhay K', role: 'Design & Fab', branch: 'MEE', dept: 'design', icon: '🔩', num: '19' },
+      { name: 'Darshan Krishna', role: 'Business Ops', branch: 'EEE', dept: 'business', icon: '📊', num: '20' },
+      { name: 'D. Sai Jaya Surya', role: 'Braking', branch: 'RAE', dept: 'braking', icon: '🛑', num: '21' },
+      { name: 'Krishna Sashank', role: 'TEAM LEAD', branch: 'EEE', dept: 'lead', icon: '👑', num: '22' },
+      { name: 'M. Madheswaran', role: 'Design & Fab', branch: 'MEE', dept: 'design', icon: '🔩', num: '23' },
+      { name: 'Haarish Kumar', role: 'Braking', branch: 'EEE', dept: 'braking', icon: '🛑', num: '24' },
+      { name: 'V B Gireendra', role: 'Business Ops', branch: 'ELC', dept: 'business', icon: '📊', num: '25' },
+    ];
+
+    const trackEl = content.querySelector('#crewCarousel');
+    const dotsEl  = content.querySelector('#carouselDots');
+    const prevBtn = content.querySelector('#prevBtn');
+    const nextBtn = content.querySelector('#nextBtn');
+    if (!trackEl) return;
+    trackEl.innerHTML = '';
+    dotsEl.innerHTML = '';
+
+    let current = 21;
+    const total = MEMBERS.length;
+
+    MEMBERS.forEach((m, i) => {
+      const card = document.createElement('div');
+      card.className = `crew-card dept-${m.dept}`;
+      card.innerHTML = `<div class="card-bg"><div class="card-accent"></div><div class="card-ghost">${m.num}</div><div class="card-dept-icon">${m.icon}</div><div class="card-role">${m.role}</div><div class="card-name">${m.name}</div><div class="card-branch">${m.branch}</div></div>`;
+      card.addEventListener('click', () => { current = i; render(); });
+      trackEl.appendChild(card);
+      const dot = document.createElement('div');
+      dot.className = 'c-dot';
+      dot.addEventListener('click', () => { current = i; render(); });
+      dotsEl.appendChild(dot);
+    });
+
+    function render() {
+      const cards = trackEl.querySelectorAll('.crew-card');
+      const dots  = dotsEl.querySelectorAll('.c-dot');
+      const RADIUS = 520;
+      cards.forEach((card, i) => {
+        let diff = i - current;
+        if (diff >  total/2) diff -= total;
+        if (diff < -total/2) diff += total;
+        const angleRad = (diff / total) * 2 * Math.PI;
+        const x = Math.sin(angleRad) * RADIUS;
+        const z = Math.cos(angleRad) * RADIUS - RADIUS;
+        const scale   = Math.max(0.4, 1 - Math.abs(diff) * 0.06);
+        const opacity = Math.max(0, 1 - Math.abs(diff) * 0.18);
+        const visible = z > -RADIUS * 1.1;
+        card.style.transform = `translateX(${x}px) translateZ(${z}px) scale(${scale})`;
+        card.style.opacity   = visible ? opacity : 0;
+        card.style.zIndex    = Math.round(100 - Math.abs(diff) * 3);
+        card.style.boxShadow = diff === 0 ? '0 0 48px rgba(0,230,118,0.3)' : 'none';
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function next() { current = (current + 1) % total; render(); }
+    function prev() { current = (current - 1 + total) % total; render(); }
+    nextBtn?.addEventListener('click', next);
+    prevBtn?.addEventListener('click', prev);
+
+    let startX = 0, drag = false;
+    trackEl.addEventListener('mousedown', e => { drag = true; startX = e.clientX; });
+    trackEl.addEventListener('mouseup', e => {
+      if (!drag) return; drag = false;
+      const dx = e.clientX - startX;
+      if (dx < -40) next(); else if (dx > 40) prev();
+    });
+    trackEl.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    trackEl.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (dx < -40) next(); else if (dx > 40) prev();
+    });
+
+    let auto = setInterval(next, 3000);
+    trackEl.addEventListener('mouseenter', () => clearInterval(auto));
+    trackEl.addEventListener('mouseleave', () => { auto = setInterval(next, 3000); });
+    render();
+  }
+
+  // ---- Re-init dept filter inside panel ----
+  function initDeptFilterInPanel() {
+    content.querySelectorAll('.dept-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        content.querySelectorAll('.dept-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const dept = tab.dataset.dept;
+        content.querySelectorAll('#rosterBody tr').forEach(row => {
+          row.style.display = (dept === 'all' || row.dataset.dept === dept) ? '' : 'none';
+        });
+      });
+    });
+  }
+
+  // Home section countdown always runs
+  window._countdownStarted = true;
+})();
 
 /* ---- LIVE COUNTDOWN ---- */
 (function() {
