@@ -1716,8 +1716,8 @@ body::after {
     <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:4px;color:var(--accent)">KARI MOTOR SPEEDWAY · COIMBATORE</div>
     <div style="font-family:'Rajdhani',sans-serif;font-size:clamp(32px,5vw,56px);letter-spacing:4px">OUR RACE CIRCUIT</div>
   </div>
-  <div class="track-wrap reveal">
-    <video autoplay muted loop playsinline
+  <div class="track-wrap">
+    <video id="trackVid" autoplay muted loop playsinline preload="auto"
       style="width:100%;display:block;border-radius:4px;border:1px solid var(--border);">
       <source src="track1.mp4" type="video/mp4">
     </video>
@@ -2326,6 +2326,30 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ---- TRACK VIDEO NUDGE ---- */
+(function() {
+  const vid = document.getElementById('trackVid');
+  if (!vid) return;
+
+  function tryPlay() {
+    vid.play().catch(() => {});
+  }
+
+  // Try immediately
+  tryPlay();
+
+  // Also try once scrolled into view (handles browsers that block offscreen autoplay)
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) tryPlay(); });
+  }, { threshold: 0.1 });
+  obs.observe(vid);
+
+  // Also try when gate is dismissed
+  document.getElementById('enterBtn')?.addEventListener('click', () => {
+    setTimeout(tryPlay, 1000);
+  });
+})();
 
 /* ---- ACHIEVEMENTS TIMELINE KART ---- */
 (function() {
