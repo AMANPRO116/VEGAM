@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Team Vegam | FKDC Kart</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --accent: #00e676;
@@ -1383,16 +1383,578 @@ section:not(#home),
 .nav-links a.active-panel { color: var(--accent); }
 .nav-links a.active-panel::after { width: 100%; }
 
-/* ========== NOISE OVERLAY ========== */
-body::after {
-  content: '';
-  position: fixed; inset: 0; z-index: 9990;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 128px;
+/* ============================================================
+   PROFESSIONAL UPGRADE — polish layer
+   ============================================================ */
+
+/* --- Upgraded font pairing --- */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --accent:   #00e676;
+  --accent2:  #69ff47;
+  --accent-glow: rgba(0,230,118,0.18);
+  --bg:       #050505;
+  --surface:  #0a0f0a;
+  --surface2: #0e160e;
+  --border:   rgba(0,230,118,0.1);
+  --border2:  rgba(255,255,255,0.06);
+  --text:     #e8e8e8;
+  --muted:    #5a6a5a;
+  --panel-bg: #07090a;
+
+  --ease-out: cubic-bezier(0.23,1,0.32,1);
+  --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
 }
-</style>
+
+/* --- Global type upgrade --- */
+body { font-family: 'DM Sans', sans-serif; }
+
+/* --- Smooth hover cursor shift on interactive elements --- */
+a, button, [data-panel] { cursor: pointer; }
+
+/* ============= GATE UPGRADE ============= */
+#gate {
+  background: radial-gradient(ellipse 80% 60% at 50% 40%,
+    rgba(0,230,118,0.04) 0%, #000 60%);
+}
+
+.gate-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(56px, 11vw, 112px);
+  letter-spacing: 10px;
+  line-height: 1;
+  color: rgba(255,255,255,0.08);
+  position: relative;
+}
+.gate-logo::after {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.gate-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: rgba(255,255,255,0.3);
+}
+
+.gate-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  background: rgba(0,230,118,0.06);
+  border: 1px solid rgba(0,230,118,0.2);
+  color: var(--accent);
+  border-radius: 100px;
+  padding: 6px 20px;
+  backdrop-filter: blur(8px);
+}
+
+.ev-btn-inner {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 5px;
+  background: rgba(10,10,10,0.9);
+  border-radius: 100px;
+  padding: 18px 48px;
+  border: 1px solid rgba(0,230,118,0.15);
+  backdrop-filter: blur(12px);
+  transition: all 0.4s var(--ease-out);
+}
+#enterBtn:hover .ev-btn-inner {
+  border-color: rgba(0,230,118,0.5);
+  box-shadow: 0 0 60px rgba(0,230,118,0.15), inset 0 0 30px rgba(0,230,118,0.04);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.charge-label { font-family: 'DM Mono', monospace; letter-spacing: 4px; color: rgba(255,255,255,0.2); }
+.charge-bar { background: rgba(255,255,255,0.04); border-radius: 100px; }
+.charge-fill { border-radius: 100px; box-shadow: 0 0 20px var(--accent); }
+
+/* ============= NAVBAR UPGRADE ============= */
+.nav-inner {
+  padding: 0 48px;
+  height: 60px;
+  background: rgba(3,4,4,0.8);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border2);
+  box-shadow: 0 1px 0 rgba(0,230,118,0.05);
+}
+
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 5px;
+  background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-logo span {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: rgba(255,255,255,0.35);
+  transition: color 0.3s, letter-spacing 0.3s;
+}
+.nav-links a:hover { color: rgba(255,255,255,0.9); letter-spacing: 3px; }
+.nav-links a::after { background: var(--accent); height: 1px; bottom: -6px; }
+
+.nav-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  border: 1px solid rgba(0,230,118,0.25);
+  padding: 5px 14px;
+  border-radius: 100px;
+  background: rgba(0,230,118,0.04);
+  transition: all 0.2s;
+}
+.nav-badge:hover { background: rgba(0,230,118,0.1); }
+
+/* ============= HERO UPGRADE ============= */
+.hero-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--accent);
+  opacity: 0.8;
+}
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(60px, 11vw, 128px);
+  line-height: 0.88;
+  letter-spacing: -1px;
+  color: white;
+  text-shadow: none;
+  filter: drop-shadow(0 4px 32px rgba(0,0,0,0.9));
+}
+.hero-title .line2 {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: none;
+  display: block;
+}
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 44px;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+.stat-num span {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 22px;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.3);
+  text-shadow: none;
+}
+
+/* ============= TICKER UPGRADE ============= */
+.ticker-wrap {
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+  background-size: 200% 100%;
+  animation: tickerGrad 4s linear infinite;
+  padding: 8px 0;
+}
+@keyframes tickerGrad { to { background-position: -200% 0; } }
+.ticker-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: rgba(0,0,0,0.75);
+  font-weight: 500;
+}
+
+/* ============= MODAL PANEL UPGRADE ============= */
+#modal-backdrop {
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(12px) saturate(150%);
+}
+
+#modal-panel {
+  background: var(--panel-bg);
+  border-top: 1px solid transparent;
+  background-clip: padding-box;
+  height: 90vh;
+  border-radius: 20px 20px 0 0;
+  box-shadow:
+    0 -4px 60px rgba(0,230,118,0.08),
+    0 -1px 0 rgba(0,230,118,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  transition: transform 0.5s var(--ease-out);
+}
+
+#modal-close {
+  padding: 18px 48px;
+  background: rgba(5,8,6,0.96);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  border-radius: 20px 20px 0 0;
+}
+
+#modal-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 6px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+}
+
+#modal-close-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
+  font-size: 14px;
+  transition: all 0.25s var(--ease-out);
+  backdrop-filter: blur(8px);
+}
+#modal-close-btn:hover {
+  background: rgba(0,230,118,0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+
+/* ============= SECTION HEADERS UPGRADE ============= */
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  opacity: 0.6;
+  padding-top: 16px;
+}
+.section-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ============= SPEC TABLE UPGRADE ============= */
+.spec-row {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding: 20px 0;
+  transition: background 0.2s;
+}
+.spec-row:hover { background: rgba(0,230,118,0.03); padding-left: 8px; }
+.spec-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.25);
+}
+.spec-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+}
+.spec-val.highlight {
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(0,230,118,0.4);
+}
+
+/* ============= ACHIEVEMENT CARD UPGRADE ============= */
+.chrono-event-card {
+  background: linear-gradient(135deg, rgba(14,22,14,0.9) 0%, rgba(7,9,10,0.9) 100%);
+  border: 1px solid rgba(0,230,118,0.08);
+  border-radius: 12px;
+  padding: 28px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: transform 0.35s var(--ease-out), border-color 0.3s, box-shadow 0.3s;
+}
+.chrono-event-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0,230,118,0.25);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,230,118,0.1);
+}
+.chrono-event-card::before {
+  border-radius: 12px 12px 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+  transform: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.chrono-event-card:hover::before { opacity: 1; transform: none; }
+.ce-year { font-family: 'DM Mono', monospace; letter-spacing: 4px; }
+.ce-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+.ce-desc { font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.4); }
+.ce-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  border-radius: 100px;
+  padding: 5px 14px;
+  background: rgba(0,230,118,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(0,230,118,0.25);
+}
+
+/* ============= CAROUSEL CARD UPGRADE ============= */
+.crew-card {
+  border-radius: 20px;
+  background: linear-gradient(160deg, #0e1a0e 0%, #060909 100%);
+  border: 1px solid rgba(0,230,118,0.08);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.card-bg {
+  background: transparent;
+}
+.crew-card .card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 1px; }
+.crew-card .card-role { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; opacity: 0.7; }
+.crew-card .card-branch { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; color: rgba(255,255,255,0.2); }
+.crew-card .card-accent { height: 2px; border-radius: 0 0 0 0; }
+.crew-card .card-ghost { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 72px; -webkit-text-stroke: 1px rgba(0,230,118,0.08); }
+.dept-lead.crew-card { box-shadow: 0 0 60px rgba(255,215,0,0.1), 0 8px 40px rgba(0,0,0,0.6); }
+
+.carousel-btn {
+  border-radius: 100px;
+  border: 1px solid rgba(0,230,118,0.2);
+  background: rgba(0,230,118,0.04);
+  backdrop-filter: blur(8px);
+  transition: all 0.25s var(--ease-out);
+}
+.carousel-btn:hover {
+  background: var(--accent);
+  color: #000;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0,230,118,0.3);
+}
+.c-dot { border-radius: 100px; width: 20px; height: 3px; background: rgba(255,255,255,0.1); }
+.c-dot.active { background: var(--accent); width: 32px; box-shadow: 0 0 8px var(--accent); }
+
+/* ============= ROSTER TABLE UPGRADE ============= */
+.dept-tab {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 7px 18px;
+  transition: all 0.2s var(--ease-out);
+}
+.dept-tab:hover { border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.05); transform: translateY(-1px); }
+.dept-tab.active { border-radius: 100px; box-shadow: 0 0 20px rgba(0,230,118,0.2); }
+
+.roster-table th { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 4px; color: rgba(0,230,118,0.5); }
+.roster-table tbody tr { transition: background 0.2s, transform 0.2s; }
+.roster-table tbody tr:hover { background: rgba(0,230,118,0.03); transform: translateX(4px); }
+.td-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 17px; letter-spacing: 1px; }
+.td-num { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.15); }
+.td-branch { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 2px; }
+.td-email a { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.2); }
+.td-email a:hover { color: var(--accent); text-shadow: 0 0 12px rgba(0,230,118,0.4); }
+.dept-badge { border-radius: 100px; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; }
+
+/* ============= TIMELINE UPGRADE ============= */
+.tl-dot {
+  border-radius: 50%;
+  border: 1px solid rgba(0,230,118,0.3);
+  background: radial-gradient(circle, rgba(0,230,118,0.1) 0%, var(--bg) 70%);
+  font-family: 'DM Mono', monospace;
+  box-shadow: 0 0 12px rgba(0,230,118,0.1);
+  transition: box-shadow 0.3s, background 0.3s;
+}
+.tl-item:hover .tl-dot { box-shadow: 0 0 24px rgba(0,230,118,0.3); }
+.tl-phase { font-family: 'DM Mono', monospace; letter-spacing: 4px; font-size: 9px; }
+.tl-title { font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 1px; font-size: 26px; }
+.tl-desc { font-family: 'DM Sans', sans-serif; color: rgba(255,255,255,0.35); }
+
+/* ============= CONTACT UPGRADE ============= */
+.contact-item-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 4px; color: rgba(0,230,118,0.5); }
+.contact-item-val { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 1px; }
+.field-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 4px; color: rgba(255,255,255,0.25); }
+.field-input {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  padding: 16px 18px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.field-input:focus {
+  border-color: rgba(0,230,118,0.4);
+  background: rgba(0,230,118,0.02);
+  box-shadow: 0 0 0 3px rgba(0,230,118,0.06);
+  outline: none;
+}
+
+.btn-primary {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 4px;
+  border-radius: 100px;
+  padding: 14px 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #000;
+  box-shadow: 0 4px 24px rgba(0,230,118,0.25);
+  transition: all 0.3s var(--ease-out);
+}
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 40px rgba(0,230,118,0.35);
+  filter: brightness(1.1);
+}
+
+/* ============= FOOTER UPGRADE ============= */
+footer {
+  background: rgba(3,4,4,0.8);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  padding: 32px 48px;
+}
+.footer-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 4px;
+}
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.15); }
+
+/* ============= ABOUT TEXT UPGRADE ============= */
+.about-text { font-family: 'DM Sans', sans-serif; font-size: 17px; color: rgba(255,255,255,0.55); line-height: 1.9; }
+.about-text strong { color: rgba(255,255,255,0.9); }
+
+/* ============= ERA HEADER UPGRADE ============= */
+.era-year { font-family: 'Syne', sans-serif; font-weight: 800; }
+.era-badge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 3px; border-radius: 100px; padding: 5px 14px; }
+
+/* ============= TRACK SECTION HEADING ============= */
+#track-section .section-header > div:last-child {
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 800 !important;
+}
+
+/* ============= COUNTDOWN UPGRADE ============= */
+.cd-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 5px; opacity: 0.5; }
+.cd-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cd-colon {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: rgba(0,230,118,0.4);
+}
+.cd-unit { font-family: 'DM Mono', monospace; letter-spacing: 4px; }
+
+/* ============= TEAM STATS UPGRADE ============= */
+.t-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.t-stat-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 4px; color: rgba(255,255,255,0.2); }
+
+/* ============= PHOTO GRID UPGRADE ============= */
+.photo-item { border-radius: 8px; overflow: hidden; }
+.photo-item img { transition: transform 0.6s var(--ease-out), filter 0.4s; filter: brightness(0.75) saturate(0.8); }
+.photo-item:hover img { transform: scale(1.07); filter: brightness(1) saturate(1.1); }
+.photo-item::after { border-radius: 8px; }
+.ce-photo { border-radius: 6px; overflow: hidden; }
+
+/* ============= BLUEPRINT OPACITY REFINE ============= */
+#blueprint { opacity: 0.07; }
+
+/* ============= SCAN-LINE EFFECT on panels ============= */
+#modal-panel::before {
+  content: '';
+  position: fixed;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  animation: scanLine 3s 0.5s ease forwards;
+  pointer-events: none;
+  z-index: 20;
+}
+#modal-panel.open::before { animation: scanLine 0.8s ease-out forwards; }
+@keyframes scanLine {
+  0%   { top: 0; opacity: 0.8; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ============= NOISE grain upgrade ============= */
+body::after {
+  opacity: 0.035;
+  background-size: 180px;
+}
+
+/* ============= SCROLLBAR UPGRADE ============= */
+* { scrollbar-width: thin; scrollbar-color: rgba(0,230,118,0.2) transparent; }
+*::-webkit-scrollbar { width: 3px; height: 3px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: rgba(0,230,118,0.2); border-radius: 100px; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(0,230,118,0.5); }
+
+/* ============= ACTIVE NAV PANEL UPGRADE ============= */
+.nav-links a.active-panel {
+  color: var(--accent) !important;
+  text-shadow: 0 0 20px rgba(0,230,118,0.4);
+}
+
 </head>
 <body>
 
