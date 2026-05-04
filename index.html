@@ -67,33 +67,38 @@ body {
 /* ========== LOADER / ENTRY ========== */
 #gate {
   position: fixed; inset: 0; z-index: 2000;
-  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,230,118,0.04) 0%, #000 60%);
+  background: #000;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 36px;
   transition: opacity 0.9s, visibility 0.9s;
   overflow: hidden;
 }
+#gate::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,230,118,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
 #gate.gone { opacity: 0; visibility: hidden; }
 
-/* Hero hidden until gate dismissed */
-#home .hero-content,
-#home .hero-number,
+/* Hero and blueprint hidden until gate dismissed */
+#blueprint { opacity: 0; transition: opacity 1.2s ease; }
+body.revealed #blueprint { opacity: 0.07; }
+
+#home #videoBg,
 #home .hero-bg,
-#home .reveal {
-  opacity: 0 !important;
-  transform: translateY(30px);
-  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+#home .hero-number,
+#home .hero-content {
+  opacity: 0;
+  transition: opacity 1s var(--ease-out);
 }
-#home.revealed .hero-content,
-#home.revealed .hero-number,
-#home.revealed .hero-bg {
-  opacity: 1 !important;
-  transform: translateY(0);
-}
-#home.revealed .reveal {
-  /* individual reveals handled by JS stagger, reset transform */
-  transform: translateY(40px);
+body.revealed #home #videoBg,
+body.revealed #home .hero-bg,
+body.revealed #home .hero-number,
+body.revealed #home .hero-content {
+  opacity: 1;
 }
 
 #particleCanvas {
@@ -437,8 +442,8 @@ body {
 #blueprint {
   position: fixed; inset: 0; z-index: 0;
   pointer-events: none;
-  opacity: 0.07;
   overflow: hidden;
+  /* opacity controlled by body.revealed class above */
 }
 #blueprint svg { width: 100%; height: 100%; }
 
@@ -912,7 +917,7 @@ footer {
 
 /* ========== SCROLL REVEAL ========== */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal.visible { opacity: 1 !important; transform: translateY(0) !important; }
 
 /* ========== MODAL PANEL SYSTEM ========== */
 section:not(#home), #countdown-banner, #track-section { display: none !important; }
@@ -1118,7 +1123,7 @@ section:not(#home), #countdown-banner, #track-section { display: none !important
 <!-- HOME -->
 <section id="home">
   <div id="videoBg">
-    <video id="heroBgVideo" playsinline muted preload="auto">
+    <video id="heroBgVideo" playsinline preload="auto">
       <source src="intro.mp4" type="video/mp4">
     </video>
     <div id="videoVignette"></div>
@@ -1461,6 +1466,8 @@ document.body.style.overflowY = 'hidden';
 // ---- Hero video: play once, stay on last frame ----
 const heroBgVideo = document.getElementById('heroBgVideo');
 heroBgVideo.loop = false;
+heroBgVideo.muted = false; // unmute so intro.mp4 audio plays
+heroBgVideo.volume = 1.0;
 heroBgVideo.addEventListener('ended', () => heroBgVideo.pause());
 
 // ---- Reveal site after gate dismissed ----
@@ -1473,9 +1480,14 @@ function revealSite() {
   navbar.classList.add('show');
   ticker.style.display = 'block';
   document.body.style.overflowY = 'auto';
-  document.querySelectorAll('#home .reveal').forEach((el, i) => {
-    setTimeout(() => el.classList.add('visible'), i * 140);
-  });
+  // Add revealed class to body — triggers hero + blueprint fade-in via CSS
+  document.body.classList.add('revealed');
+  // Stagger the hero content reveals after a short delay
+  setTimeout(() => {
+    document.querySelectorAll('#home .reveal').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 160);
+    });
+  }, 300);
 }
 
 // ---- Particle canvas ----
@@ -1541,7 +1553,6 @@ document.getElementById('enterBtn').addEventListener('click', () => {
   setTimeout(() => {
     gate.style.display = 'none';
     heroBgVideo.play().catch(() => {});
-    bgAudio.play().catch(() => {});
     setTimeout(revealSite, 600);
   }, 900);
 });
