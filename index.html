@@ -66,7 +66,7 @@ body {
 
 /* ========== LOADER / ENTRY ========== */
 #gate {
-  position: fixed; inset: 0; z-index: 1000;
+  position: fixed; inset: 0; z-index: 2000;
   background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,230,118,0.04) 0%, #000 60%);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -75,6 +75,26 @@ body {
   overflow: hidden;
 }
 #gate.gone { opacity: 0; visibility: hidden; }
+
+/* Hero hidden until gate dismissed */
+#home .hero-content,
+#home .hero-number,
+#home .hero-bg,
+#home .reveal {
+  opacity: 0 !important;
+  transform: translateY(30px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+#home.revealed .hero-content,
+#home.revealed .hero-number,
+#home.revealed .hero-bg {
+  opacity: 1 !important;
+  transform: translateY(0);
+}
+#home.revealed .reveal {
+  /* individual reveals handled by JS stagger, reset transform */
+  transform: translateY(40px);
+}
 
 #particleCanvas {
   position: absolute; inset: 0;
